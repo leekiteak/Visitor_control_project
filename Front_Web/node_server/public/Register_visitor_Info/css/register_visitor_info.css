@@ -59,10 +59,18 @@ div .middle .center{
 .div4{
     width: 100%;
     height: 20%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
 }
 .div5{
     width: 100%;
     height: 20%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
 }
 
 div .middle .left{

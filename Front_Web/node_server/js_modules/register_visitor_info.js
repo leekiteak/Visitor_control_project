@@ -8,8 +8,6 @@ var register_visitor_info = `
     <div class="middle">
       <div class="left"></div>
       <div class="center">
-        <div class="div5">
-        </div>
         <div class="div1">
           <body>이름</body>
           <div class="textbox">
@@ -29,12 +27,25 @@ var register_visitor_info = `
         <div class="div3">
           <body>전화번호</body>
           <div class="textbox">
-            <label for="phone_number">이름</label>
+            <label for="phone_number">전화번호</label>
             <input type="text" id="phone_number">
           </div>
         </div>
 
         <div class="div4">
+          <body>아이디</body>
+            <div class="textbox">
+              <label for="id">아이디</label>
+              <input type="text" id="ID">
+            </div>
+        </div>
+
+        <div class="div5">
+          <body>비밀번호</body>
+            <div class="textbox">
+              <label for="password">비밀번호</label>
+              <input type="text" id="password">
+            </div>
         </div>
 
       </div>
