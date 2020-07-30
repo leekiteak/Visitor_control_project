@@ -66,6 +66,7 @@ router.route('/schedule_list').get(function (req, res) {
 });
 
 //방문 일정 자세히 보기
+//굳이 없어도 될 듯 
 router.route('/schedule_indetail').get(function (req, res) {
 
     res.send(head.head_schedule_indetail() + schedule_indetail.schedule_indetail() + body.body());

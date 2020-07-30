@@ -2,10 +2,15 @@ module.exports.main = print_main;
 module.exports.search = print_search;
 var login = `
   <div>
-    <div class="top"></div>
+    <div class="top">
+      <div class="title">방문자 일정 등록</div>
+      <p>일정 등록을 위해 로그인 해주세요</p>
+    </div>
     <div class="middle">
       <div class="left"></div>
       <div class="center">
+        <div class="div4">
+        </div>
         <div class="div1">
           <div class="textbox">
             <label for="idea">아이디</label>
@@ -26,8 +31,8 @@ var login = `
     </div>
     <div class="bottom">
       <div class="btn_box">
-        <div class="btn_left">로그인</div>
-        <div class="btn_right">회원가입</div>
+        <div class="btn_left" style="text-align:center">로그인</div>
+        <div class="btn_right" style="text-align:center">회원가입</div>
       </div>
     </div>
   </div>

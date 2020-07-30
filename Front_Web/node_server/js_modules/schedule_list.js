@@ -6,30 +6,24 @@ var schedule_list = `
     <div class="middle">
       <div class="left"></div>
       <div class="center">
-
         <div class="div1">
           <div class="textbox">
-            <label>일정 목록</label>
+            <label>방문 기록</label>
           </div>
         </div>
-        
         <div class="div2">
           <div class="textbox">
             <label>목록 박스</label>
-
-          </div>
-        </div> 
-
-        <div class="div3">
-          <div class="textbox">
-            <label>방문 일정 등록</label>
           </div>
         </div>
-
-      </div>
+        <div class="div3">
+        </div>
+      </div>      
       <div class="right"></div>
     </div>
-    <div class="bottom"></div>
+    <div class="bottom">
+      <div class="btn_register">신규 방문 등록하기</div>
+    </div>
   </div>
 `;
 

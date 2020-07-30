@@ -14,8 +14,8 @@ $(document).ready(function () {
   });
 });
 
-$(document).on("click", ".btn", function () {
-  console.log("btn is clicked");
+$(document).on("click", ".btn_left", function () {
+  console.log("btn_left is clicked");
   location.href = "/schedule_list";
 });
 /*

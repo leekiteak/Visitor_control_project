@@ -10,6 +10,7 @@ div .middle{
 }
 div .bottom{
     height: 100px;
+    width: 60%;
 }
 
 div .middle .center{
@@ -43,7 +44,15 @@ div .middle .center{
     justify-content: center;
     align-items: center;
 }
-
+.btn_register{
+    width: 60%;
+    height: 50%;
+    background-color: bisque;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 div .middle .left{
     width: 20%;
 
