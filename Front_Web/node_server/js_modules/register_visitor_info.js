@@ -18,10 +18,7 @@ var register_visitor_info = `
         
         <div class="div2">
           <body>생년월일</body>
-          <div class="textbox">
-            <label for="resident_registration_number">예) 900101</label>
-            <input type="text" id="resident_registration_number" maxlength=6>
-          </div>
+          <input type="date" id="date">
         </div> 
 
         <div class="div3">
