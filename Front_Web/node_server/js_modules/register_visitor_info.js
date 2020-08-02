@@ -3,7 +3,7 @@ module.exports.register_visitor_info = print_register_visitor_info;
 var register_visitor_info = `
   <div>
     <div class="top">
-    <h3>회원가입</h3>
+     <div class="title">회원가입</div>
     </div>
     <div class="middle">
       <div class="left"></div>
@@ -11,7 +11,7 @@ var register_visitor_info = `
         <div class="div1">
           <body>이름</body>
           <div class="textbox">
-            <label for="name">이름</label>
+            <label for="name">예) 홍길동</label>
             <input type="text" id="name">
           </div>
         </div>
@@ -20,23 +20,23 @@ var register_visitor_info = `
           <body>생년월일</body>
           <div class="textbox">
             <label for="resident_registration_number">예) 900101</label>
-            <input type="text" id="resident_registration_number">
+            <input type="text" id="resident_registration_number" maxlength=6>
           </div>
         </div> 
 
         <div class="div3">
           <body>전화번호</body>
           <div class="textbox">
-            <label for="phone_number">전화번호</label>
-            <input type="text" id="phone_number">
+            <label for="phone_number">예) 01012345678</label>
+            <input type="text" id="phone_number" maxlength=11>
           </div>
         </div>
 
         <div class="div4">
           <body>아이디</body>
             <div class="textbox">
-              <label for="id">아이디</label>
-              <input type="text" id="ID">
+              <label for="id">이메일 형식으로 입력</label>
+              <input type="text" id="id">
             </div>
         </div>
 

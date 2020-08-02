@@ -3,8 +3,8 @@ module.exports.search = print_search;
 var login = `
   <div>
     <div class="top">
-      <div class="title">방문자 일정 등록</div>
-      <p>일정 등록을 위해 로그인 해주세요</p>
+      <div class="title">로그인</div>
+      <p>방문 일정 등록을 위해 로그인 해주세요</p>
     </div>
     <div class="middle">
       <div class="left"></div>
@@ -12,15 +12,17 @@ var login = `
         <div class="div4">
         </div>
         <div class="div1">
+          <body>아이디</body>
           <div class="textbox">
-            <label for="idea">아이디</label>
+            <label for="idea">이메일 형식으로 입력</label>
             <input type="text" id="idea">
           </div>
         </div>
         
         <div class="div2">
+        <body>비밀번호</body>
           <div class="textbox">
-            <label for="password">패스워드</label>
+            <label for="password">비밀번호</label>
             <input type="password" id="password">
           </div>
         </div> 

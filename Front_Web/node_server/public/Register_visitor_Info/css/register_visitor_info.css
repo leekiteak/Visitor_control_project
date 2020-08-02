@@ -4,9 +4,13 @@ div{
 }
 div .top{
     height: 100px;
-    width: 60%;
+}
+div .title{
+    height: 100%;
+    padding: 40px;
+    font-weight: 700;
+    font-size: larger;
     text-align: center;
-    margin-top: 20px;
 }
 div .middle{
     height: 400px;
