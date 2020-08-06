@@ -1,7 +1,5 @@
 module.exports.register_schedule = print_register_schedule;
 
-var today = new Date();
-var today_date = today.getDate();
 var register_schedule = `
   <div>
     <div class="top">
@@ -38,7 +36,7 @@ var register_schedule = `
         <div class="div4">
           <body>이름  </body>
           <div class="textbox">
-            <label for="visitor_name">예) 홍길동</label>
+            <label for="visitor_name"></label>
             <input type="text" id="visitor_name">
           </div>
         </div>
@@ -46,15 +44,15 @@ var register_schedule = `
         <div class="div5">
           <body>생년월일</body>
           <div class="textbox">
-            <label for="birth_date">예) 900101</label>
-            <input type="text" id="birth_date" maxlength=6>
+            <label for="birth_date"></label>
+            <input type="text" id="birth_date" maxlength=8>
           </div>
         </div>
 
         <div class="div6">
           <body>전화번호</body>
           <div class="textbox">
-            <label for="phone_number">예) 01012345678</label>
+            <label for="phone_number"></label>
             <input type="text" id="phone_number" maxlength=11>
           </div>
         </div>
@@ -67,8 +65,14 @@ var register_schedule = `
   </div>
 `;
 
-function print_register_schedule() {
+function print_register_schedule(uid,name,birth_date,phone_number) {
     return `
+      <script>
+        var uid = "${uid}";
+        var name = "${name}";
+        var birth_date = "${birth_date}";
+        var phone_number = "${phone_number}";
+      </script>
       ${register_schedule}
     `;
 }

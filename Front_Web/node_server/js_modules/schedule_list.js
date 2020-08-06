@@ -8,10 +8,15 @@ var schedule_list = `
     <div class="middle">
       <div class="left"></div>
       <div class="center">
+        <div class="category">
+          <div class="date">방문 날짜</div>
+          <div class="staff_name">직원 이름</div>
+          <div class="purpose">방문 목적</div>
+        </div>
         <div class="div1">
-          <div class="textbox">
-            <label>목록 박스</label>
-          </div>
+          <div class="schedule_container" id = "schedule_container"></div>
+
+          <ul class="pagination" id="pagination"></ul>
         </div>
       </div>      
       <div class="right"></div>
@@ -22,8 +27,11 @@ var schedule_list = `
   </div>
 `;
 
-function print_schedule_list() {
+function print_schedule_list(uid) {
     return `
+      <script>
+        var uid = "${uid}";
+      </script>
       ${schedule_list}
     `;
 }

@@ -1,5 +1,3 @@
-//const { register_schedule } = require("./register_schedule");
-
 module.exports.head_all = print_head_all;
 module.exports.head_register_visitor_info = print_head_register_visitor_info;
 module.exports.head_register_schedule = print_head_register_schedule;
@@ -34,18 +32,19 @@ var head_common = `
     <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-app.js"></script>
     <!-- Add Firebase products that you want to use -->
     <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-firestore.js"></script>
     <script>
-            var firebaseConfig = {
-                apiKey: "AIzaSyAHwuoskNAVJJd832elbVeu8XUKO01g45o",
-                authDomain: "smoothing.firebaseapp.com",
-                databaseURL: "https://smoothing.firebaseio.com/",
-                projectId: "smoothing",
-                storageBucket: "smoothing.appspot.com",
-                messagingSenderId: "495738011471",
-                appId: "1:495738011471:web:f4537068b5acc5889b0f3a",
-                measurementId: "G-Y4EVEKX8EW"
-            };
-            firebase.initializeApp(firebaseConfig);
+        var init = firebase.initializeApp({
+            apiKey: "AIzaSyCuRYdN1dqAU2_zA0msxpvqp_TPF9PWWo8",
+            authDomain: "vams-ef3c4.firebaseapp.com",
+            databaseURL: "https://vams-ef3c4.firebaseio.com",
+            projectId: "vams-ef3c4",
+            storageBucket: "vams-ef3c4.appspot.com",
+            messagingSenderId: "569431193014",
+            appId: "1:569431193014:web:408e30be634bc47a6b7d17",
+            measurementId: "G-HK524L8K92"
+        });
+        var db = init.firestore();
     </script>
 `;
 
@@ -56,7 +55,6 @@ var head_register_visitor_info = `
 
     <!--js-->
     <script src="/Register_visitor_Info/js/Register_visitor_Info.js"></script>
-
 `;
 
 //신규 방문 일정 등록 헤더
@@ -85,6 +83,12 @@ var head_schedule_list = `
 
     <!--js-->
     <script src="/Visiting_schedule/js/visiting_schedule.js"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="/Visiting_schedule/js/jquery.twbsPagination.js"></script>
 `;
 
 //방문 일정 자세히 보기 헤더
@@ -111,9 +115,6 @@ function html_default() {
     <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, height = device-height, initial-scale=1.0, maximum-scale=1, minimum-scale=1">
-
-    <link rel="icon" type="image/png" href="/main/img/logo_smooting.png"/>
-    <link rel="shortcut icon" href="/main/img/logo_smooting.png" type="image/x-icon">
 
     <meta property ="og:title" content="방문자 등록 서비스">
     <meta property ="og:description" content="방문자 등록 서비스 사이트입니다">

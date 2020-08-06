@@ -41,7 +41,7 @@ var register_visitor_info = `
           <body>비밀번호</body>
             <div class="textbox">
               <label for="password">비밀번호</label>
-              <input type="text" id="password">
+              <input type="password" id="password">
             </div>
         </div>
 

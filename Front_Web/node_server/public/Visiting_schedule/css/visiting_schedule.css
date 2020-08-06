@@ -23,13 +23,13 @@ div .bottom{
 div .middle .center{
     width: 60%;
     height: 100%;
-
+    background-color: azure;
+    float: left;
 }
 
 .div1{
     width: 100%;
     height: 90%;
-    background-color: azure;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -46,11 +46,13 @@ div .middle .center{
 }
 div .middle .left{
     width: 20%;
-
+    height: 100%;
+    float: left;
 }
 div .middle .right{
     width: 20%;
-
+    height: 100%;
+    float: left;
 }
 .where {
     display: block;
@@ -61,20 +63,35 @@ div .middle .right{
     font-style: italic;
 }
 
-.textbox {
+.schedule_container{
     width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    height: 80%;
+    margin: 0;
 }
-.textbox label {
+.schedule_box{
+    width: 100%;
+    height: 20%;
+}
+.date{
+    display: inline-block;
     text-align: center;
-    width: 200px;
-    position: relative;
-    padding: .8em .5em;  /* input 요소의 padding 값 만큼 */
-    color: #999;
-    cursor: text;
-    margin-bottom: 0;
+    width: 30%;
+    height: 100%;
+}
+.staff_name{
+    display: inline-block;
+    text-align: center;
+    width: 30%;
+    height: 100%;
+}
+.purpose{
+    display: inline-block;
+    text-align: center;
+    width: 30%;
+    height: 100%;
+}
+
+.category{
+    width: 100%;
+    height: 10%;
 }
