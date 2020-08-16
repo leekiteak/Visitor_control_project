@@ -18,7 +18,19 @@ $(document).ready(function () {
 $(document).on("click", ".btn_left", function () {
   var id = $("#idea").val();
   var password = $("#password").val();
+  input_log(id,password);
+});
 
+// 메시지 전송
+$(document).on("keyup", "#password", function () {
+  if (event.keyCode === 13) {
+    var id = $("#idea").val();
+    var password = $("#password").val();
+    input_log(id,password);
+  }
+});
+
+function input_log(id,password){
   if (id.length == 0 && password.length == 0) {
     alert("아이디 및 패스워드를 입력해주세요.");
   } else if(id.length == 0){
@@ -28,7 +40,27 @@ $(document).on("click", ".btn_left", function () {
   }else{
     log_in(id, password);
   }
-});
+}
+
+function login_process(email, uid, is_visitor){
+  $.ajax({
+    url: '/log_in_process',
+    method: 'POST',
+    data: {
+      email: email,
+      uid: uid,
+      is_visitor: is_visitor
+    },
+    json: true,
+    success: (result) => {
+      console.log(result);
+      location.href = "/schedule_list";
+    },
+    error: (requests, status, error) => {
+      alert(error);
+    }
+  });
+}
 
 //회원가입 클릭 시
 $(document).on("click", ".btn_right", function () {
@@ -43,22 +75,17 @@ function log_in(id, password) {
         var email = user.email;
         var uid = user.uid;
 
-        $.ajax({
-          url: '/log_in_process',
-          method: 'POST',
-          data: {
-            email: email,
-            uid: uid
-          },
-          json: true,
-          success: (result) => {
-            console.log(result);
-            location.href = "/schedule_list";
-          },
-          error: (requests, status, error) => {
-            alert(error);
+        db.collection('Staffs').doc(uid).get().then(queryDoc => {
+
+          if(!queryDoc.exists){
+            console.log("visitor");
+            login_process(email,uid,"true");
+          }else{
+            console.log("staff");
+            login_process(email,uid,"false");
           }
-        })
+      
+        });
 
       } else {
         console.log("회원 가입 후 이용하시기 바랍니다.");

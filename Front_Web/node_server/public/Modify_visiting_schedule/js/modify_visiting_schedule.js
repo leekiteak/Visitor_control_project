@@ -12,10 +12,15 @@ $(document).ready(function() {
       }
     });
 
-    $("#visitor_name").val(name);
+    $("#visitor_name").val(visitor_name);
     $("#birth_date").val(birth_date);
     $("#phone_number").val(phone_number);
+    $("#date").val(visit_date);
+    $("#time").val(visit_time);
+    $("#staff_name").val(staff_name);
+    $("#visit_purpose").val(visit_purpose);
   });
+
 //확인 클릭 시
 $(document).on("click", ".btn_register", function () {
   var date = $("#date").val();
@@ -28,30 +33,21 @@ $(document).on("click", ".btn_register", function () {
   }else{
     console.log(date + " : " + time + " : " + staff_name+ " : " +visit_purpose);
 
-    register_schedule(date,time,staff_name,visit_purpose,name,birth_date,phone_number);
+    modify_schedule(date,time,staff_name,visit_purpose);
   }
 
-  //location.href = "/schedule_list";
 });
 
-function register_schedule(date,time,staff_name,visit_purpose,visitor_name,birth_date,phone_number){
+function modify_schedule(date,time,staff_name,visit_purpose){
 
-  var data = {
-    visitor_name: visitor_name,
+  db.collection('Schedules').doc(doc_id).update({
     staff_name: staff_name,
     visit_date: date,
     visit_time: time,
-    visitor_birth_date: birth_date,
     visit_purpose: visit_purpose,
-    visitor_phone_number: phone_number,
-    visitor_uid: uid,
-    confirm_status: 1
-  };
-
-  db.collection('Schedules').add(data).then(function (){
+  }).then(function (){
     console.log("c-bal");
     location.href = "/schedule_list";
-
   })
   .catch(function(error) {
     // Handle Errors here.

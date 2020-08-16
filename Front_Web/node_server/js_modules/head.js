@@ -1,7 +1,9 @@
 module.exports.head_all = print_head_all;
 module.exports.head_register_visitor_info = print_head_register_visitor_info;
 module.exports.head_register_schedule = print_head_register_schedule;
-module.exports.head_schedule_list = print_head_schedule_list;
+module.exports.head_schedule_list_visitor = print_head_schedule_list_visitor;
+module.exports.head_schedule_list_staff = print_head_schedule_list_staff;
+module.exports.head_modify_schedule = print_head_modify_schedule;
 module.exports.head_schedule_indetail = print_head_schedule_indetail;
 
 var head_common = `
@@ -67,6 +69,15 @@ var head_register_schedule = `
 
 `;
 
+//방문 일정 수정 헤더
+var head_modify_schedule = `
+    <!--css-->
+    <link rel="stylesheet" href="/Modify_visiting_schedule/css/modify_visiting_schedule.css">
+
+    <!--js-->
+    <script src="/Modify_visiting_schedule/js/modify_visiting_schedule.js"></script>
+`;
+
 //로그인 헤더
 var head_login = `
     <!--css-->
@@ -76,13 +87,28 @@ var head_login = `
     <script src="/Log_In/js/log_in.js"></script>
 `;
 
-//방문 일정 리스트 헤더
-var head_schedule_list = `
+//방문 일정 리스트 헤더(방문자)
+var head_schedule_list_visitor = `
     <!--css-->
-    <link rel="stylesheet" href="/Visiting_schedule/css/visiting_schedule.css">
+    <link rel="stylesheet" href="/Visiting_schedule/css/visiting_schedule_visitor.css">
 
     <!--js-->
-    <script src="/Visiting_schedule/js/visiting_schedule.js"></script>
+    <script src="/Visiting_schedule/js/visiting_schedule_visitor.js"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="/Visiting_schedule/js/jquery.twbsPagination.js"></script>
+`;
+
+//방문 일정 리스트 헤더(직원)
+var head_schedule_list_staff = `
+    <!--css-->
+    <link rel="stylesheet" href="/Visiting_schedule/css/visiting_schedule_staff.css">
+
+    <!--js-->
+    <script src="/Visiting_schedule/js/visiting_schedule_staff.js"></script>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
@@ -152,8 +178,14 @@ function print_head_register_schedule() {
     return html_default() + `${head_common} ${head_register_schedule} </head> <body>`;
 }
 
-function print_head_schedule_list(){
-    return html_default() + `${head_common} ${head_schedule_list} </head> <body>`;
+function print_head_schedule_list_visitor(){
+    return html_default() + `${head_common} ${head_schedule_list_visitor} </head> <body>`;
+}
+function print_head_schedule_list_staff(){
+    return html_default() + `${head_common} ${head_schedule_list_staff} </head> <body>`;
+}
+function print_head_modify_schedule(){
+    return html_default() + `${head_common} ${head_modify_schedule} </head> <body>`;
 }
 
 function print_head_schedule_indetail(){
