@@ -5,7 +5,24 @@ div{
 div .top{
     height: 100px;
 }
+div .top .left{
+    width: 20%;
+    height: 100%;
+    float: left;
+    font-size: large;
+}
+div .top .center{
+    width: 60%;
+    height: 100%;
+    float: left;
+}
+div .top .right{
+    width: 20%;
+    height: 100%;
+    float: left;
+}
 div .title{
+    width: 100%;
     height: 100%;
     padding: 40px;
     font-weight: 700;
@@ -27,7 +44,12 @@ div .middle .center{
     /*position: absolute;
     left: 10px*/
 }
-
+.logo{
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    font-weight: 700;
+}
 .div1{
     width: 100%;
     height: 10%;
@@ -91,8 +113,8 @@ div .middle .right{
 }
 .btn_register{
     height: 50%;
-    width: 60%;
-    background-color: bisque;
+    width: 30%;
+    background-color: aliceblue;
     display: flex;
     flex-direction: column;
     justify-content: center;

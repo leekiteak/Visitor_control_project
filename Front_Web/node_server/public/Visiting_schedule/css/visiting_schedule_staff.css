@@ -34,18 +34,27 @@ div .title{
     text-align: center;
     padding: 40px;
 }
+.logo{
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    font-weight: 700;
+}
 div .middle{
     height: 500px;
 }
 div .bottom{
     height: 100px;
     width: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 div .middle .center{
-    width: 60%;
+    width: 80%;
     height: 100%;
-    background-color: azure;
     float: left;
 }
 
@@ -59,12 +68,12 @@ div .middle .center{
 }
 
 div .middle .left{
-    width: 20%;
+    width: 10%;
     height: 100%;
     float: left;
 }
 div .middle .right{
-    width: 20%;
+    width: 10%;
     height: 100%;
     float: left;
 }
@@ -133,4 +142,7 @@ div .middle .right{
 .category{
     width: 100%;
     height: 10%;
+    padding: 10px;
+    background-color: aliceblue;
+    border: 1px solid #d8d8d8;
 }

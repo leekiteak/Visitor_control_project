@@ -9,6 +9,7 @@ div .top .left{
     width: 20%;
     height: 100%;
     float: left;
+    font-size: large;
 }
 div .top .center{
     width: 60%;
@@ -34,18 +35,27 @@ div .title{
     text-align: center;
     padding: 40px;
 }
+.logo{
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    font-weight: 700;
+}
 div .middle{
     height: 500px;
 }
 div .bottom{
     height: 100px;
     width: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 div .middle .center{
-    width: 60%;
+    width: 80%;
     height: 100%;
-    background-color: azure;
     float: left;
 }
 
@@ -56,23 +66,24 @@ div .middle .center{
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    border: 1px solid #d8d8d8;
 }
 .btn_register{
-    width: 60%;
+    width: 30%;
     height: 50%;
-    background-color: bisque;
+    background-color: aliceblue;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 div .middle .left{
-    width: 20%;
+    width: 10%;
     height: 100%;
     float: left;
 }
 div .middle .right{
-    width: 20%;
+    width: 10%;
     height: 100%;
     float: left;
 }
@@ -87,12 +98,14 @@ div .middle .right{
 
 .schedule_container{
     width: 100%;
-    height: 80%;
+    height: 100%;
     margin: 0;
 }
 .schedule_box{
     width: 100%;
     height: 20%;
+    text-align: center;
+    padding: 10px;
 }
 .date{
     display: inline-block;
@@ -142,4 +155,7 @@ div .middle .right{
 .category{
     width: 100%;
     height: 10%;
+    padding: 10px;
+    background-color: aliceblue;
+    border: 1px solid #d8d8d8;
 }

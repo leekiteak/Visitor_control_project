@@ -5,11 +5,40 @@ div{
 div .top{
     height: 100px;
 }
+div .top .left{
+    width: 20%;
+    height: 100%;
+    float: left;
+    font-size: large;
+    font-weight: 700;
+}
+div .top .center{
+    width: 60%;
+    height: 100%;
+    float: left;
+}
+div .top .right{
+    width: 20%;
+    height: 100%;
+    float: left;
+}
 div .title{
+    width: 100%;
     height: 100%;
     padding: 40px;
     font-weight: 700;
     font-size: larger;
+    text-align: center;
+}
+.logout{
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    padding: 40px;
+}
+.logo{
+    width: 100%;
+    height: 100%;
     text-align: center;
 }
 div .middle{
@@ -91,8 +120,8 @@ div .middle .right{
 }
 .btn_register{
     height: 50%;
-    width: 60%;
-    background-color: bisque;
+    width: 10%;
+    background-color: aliceblue;
     display: flex;
     flex-direction: column;
     justify-content: center;

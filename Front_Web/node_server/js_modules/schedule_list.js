@@ -4,7 +4,9 @@ module.exports.schedule_list_staff = print_schedule_list_staff;
 var schedule_list_visitor = `
   <div>
     <div class="top">
-      <div class="left"></div>
+      <div class="left">
+        <div class="logo">방문자 등록 서비스</div>
+      </div>
       <div class="center">
         <div class="title">방문 기록(방문자)</div>
       </div>
@@ -22,14 +24,13 @@ var schedule_list_visitor = `
           <div class="confirm_status">승인 상태</div>
         </div>
         <div class="div1">
-          <div class="schedule_container" id = "schedule_container"></div>
-
-          <ul class="pagination" id="pagination"></ul>
+          <div class="schedule_container" id ="schedule_container"></div>
         </div>
       </div>      
       <div class="right"></div>
     </div>
     <div class="bottom">
+      <ul class="pagination" id="pagination"></ul>
       <div class="btn_register">새 방문 등록하기</div>
     </div>
   </div>

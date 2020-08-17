@@ -29,14 +29,14 @@ div .bottom{
 .btn_left{
     float: left;
     margin: 10px;
-    width: 30%;
-    background-color: bisque;
+    width: 20%;
+    background-color: aliceblue;
 }
 .btn_right{
     float: right;
     margin: 10px;
-    width: 30%;
-    background-color: bisque;
+    width: 20%;
+    background-color: aliceblue;
 }
 
 

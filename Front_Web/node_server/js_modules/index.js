@@ -3,7 +3,7 @@ module.exports.main = print_main;
 var login = `
   <div>
     <div class="top">
-      <div class="title">로그인</div>
+      <div class="title">방문자 등록 서비스</div>
       <p>방문 일정 등록을 위해 로그인 해주세요</p>
     </div>
     <div class="middle">
@@ -15,7 +15,7 @@ var login = `
           <body>아이디</body>
           <div class="textbox">
             <label for="idea">이메일 형식으로 입력</label>
-            <input type="text" id="idea">
+            <input type="text" id="idea" style="border: 1px solid #d8d8d8">
           </div>
         </div>
         
@@ -23,7 +23,7 @@ var login = `
         <body>비밀번호</body>
           <div class="textbox">
             <label for="password">비밀번호</label>
-            <input type="password" id="password">
+            <input type="password" id="password" style="border: 1px solid #d8d8d8">
           </div>
         </div> 
         <div class="div3">
