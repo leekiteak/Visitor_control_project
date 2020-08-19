@@ -9,9 +9,9 @@ $(document).on("click", ".logout", function () {
 });
 
 //방문 승인 클릭 시
-function confirm_clicked(doc_id) {
+function confirm_clicked(doc_id,date) {
 
-  console.log(doc_id + "방문 승인 클릭");
+  console.log(doc_id + date +"방문 승인 클릭");
 
   db.collection('Schedules').doc(doc_id).update({
     confirm_status: 2
@@ -86,7 +86,7 @@ function schedule_box(date, staff_name, purpose, confirm_status, doc_id) {
   var status;
   if (confirm_status == 1) {
     status = `<div class="status_container">
-            <div class="confirm" onclick="confirm_clicked('${doc_id}')">승인</div>
+            <div class="confirm" onclick="confirm_clicked('${doc_id},${date}')">승인</div>
             <div class="reject" onclick="reject_clicked('${doc_id}')">거절</div>
             </div>`;
   } else if (confirm_status == 2) {

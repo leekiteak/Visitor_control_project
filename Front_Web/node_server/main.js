@@ -30,6 +30,7 @@ var register_visitor_info = require('./js_modules/register_visitor_info');
 var register_schedule = require('./js_modules/register_schedule');
 var schedule_list = require('./js_modules/schedule_list');
 var modify_schedule = require('./js_modules/modify_schedule');
+var QR_code = require('./js_modules/QR_code');
 
 
 var app = express();
@@ -133,8 +134,13 @@ router.route('/schedule_list').get(function (req, res) {
         console.log("로그인 후 이용하시기 바랍니다.");
         res.redirect("/");
     }
-
 });
+
+//QR코드 생성
+router.route('/QR_code').get(function (req, res) {
+    res.send(head.head_QR_code() + QR_code.qr_code() + body.body());
+});
+
 
 //로그인 정보 세션에 저장
 router.route('/log_in_process').post(function (req, res) {
