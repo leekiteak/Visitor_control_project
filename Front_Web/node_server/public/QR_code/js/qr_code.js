@@ -5,7 +5,7 @@ $(document).ready(function () {
 });
 
 function makeCode(qrcode) {
-
-    qrcode.makeCode("성공");
+    console.log(doc_id, date);
+    qrcode.makeCode("doc_id : "+doc_id+", date : "+date);
 }
 

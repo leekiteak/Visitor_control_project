@@ -16,8 +16,27 @@ function confirm_clicked(doc_id,date) {
   db.collection('Schedules').doc(doc_id).update({
     confirm_status: 2
   }).then(function () {
+
     console.log("방문 승인 클릭 완료, confirm status:2");
-    location.href = "/schedule_list";
+
+    $.ajax({
+      url: '/send_QR_code',
+      method: 'POST',
+      data: {
+        doc_id: doc_id,
+        date: date
+      },
+      json: true,
+      success: (result) => {
+        console.log(result);
+
+        location.href = "/schedule_list";
+      },
+      error: (requests, status, error) => {
+        alert(error);
+      }
+    });
+
   });
 }
 
@@ -86,7 +105,7 @@ function schedule_box(date, staff_name, purpose, confirm_status, doc_id) {
   var status;
   if (confirm_status == 1) {
     status = `<div class="status_container">
-            <div class="confirm" onclick="confirm_clicked('${doc_id},${date}')">승인</div>
+            <div class="confirm" onclick="confirm_clicked('${doc_id}','${date}')">승인</div>
             <div class="reject" onclick="reject_clicked('${doc_id}')">거절</div>
             </div>`;
   } else if (confirm_status == 2) {

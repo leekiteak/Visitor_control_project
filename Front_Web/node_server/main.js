@@ -16,6 +16,9 @@ var session = require('express-session');
 var FileStore = require('session-file-store')(session);
 var admin = require('firebase-admin');
 var serviceAccount = require('./cfg/vams-ef3c4-firebase-adminsdk-ie4uq-e7d74b048a.json');
+var twilioInfo = require('./cfg/twilio');
+
+const client = require('twilio')(twilioInfo.accountSid, twilioInfo.authToken);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
@@ -138,9 +141,27 @@ router.route('/schedule_list').get(function (req, res) {
 
 //QR코드 생성
 router.route('/QR_code').get(function (req, res) {
-    res.send(head.head_QR_code() + QR_code.qr_code() + body.body());
+    var doc_id = req.query.doc_id;
+    var date = req.query.date;
+
+    res.send(head.head_QR_code() + QR_code.qr_code(doc_id,date) + body.body());
 });
 
+router.route('/send_QR_code').post(function (req, res) {
+    //console.log(req.session);
+    var doc_id = req.body.doc_id;
+    var date = req.body.date;
+
+    client.messages
+    .create({
+        body: 'http://vams.iptime.org:8080/QR_code?doc_id='+doc_id+'&date='+date,   
+        from: '+18303553053',
+        to: '+821044098230'
+    })
+    .then(message => console.log(message));
+    res.send("success!!!!");
+
+});
 
 //로그인 정보 세션에 저장
 router.route('/log_in_process').post(function (req, res) {
