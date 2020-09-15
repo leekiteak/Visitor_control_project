@@ -25,7 +25,7 @@ admin.initializeApp({
 });
 
 //따로 만든 모듈
-var head = require('./js_modules/head'); //main 화면
+var head = require('./js_modules/head'); //main 화면  
 var navbar = require('./js_modules/navbar');//navigation 바
 var main = require('./js_modules/index'); //main화면
 var body = require('./js_modules/body'); 
@@ -145,6 +145,31 @@ router.route('/QR_code').get(function (req, res) {
     var date = req.query.date;
 
     res.send(head.head_QR_code() + QR_code.qr_code(doc_id,date) + body.body());
+});
+
+//QR코드 정보 조회 요청
+router.route('/QR_code_request').post(function (req, res) {
+    var doc_id = req.body.id;
+
+    var schedules_db = admin.firestore().collection("Schedules");
+    //날짜 확인 과정 추가하기
+
+    //console.log(doc_id + "in qrcode request");
+
+    schedules_db.doc(doc_id).get().then(queryDoc => {
+
+        
+        var name = queryDoc.data().visitor_name;
+        //console.log(name);
+        res.send(name);
+
+    }).catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        res.send(errorMessage);
+
+    });
 });
 
 router.route('/send_QR_code').post(function (req, res) {
