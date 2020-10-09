@@ -9,7 +9,7 @@ $(document).on("click", ".logout", function () {
 });
 
 //방문 승인 클릭 시
-function confirm_clicked(doc_id,date) {
+function confirm_clicked(doc_id,date,visitor_phone_number) {
 
   console.log(doc_id + date +"방문 승인 클릭");
 
@@ -24,7 +24,8 @@ function confirm_clicked(doc_id,date) {
       method: 'POST',
       data: {
         doc_id: doc_id,
-        date: date
+        date: date,
+        phone_number: visitor_phone_number
       },
       json: true,
       success: (result) => {
@@ -69,45 +70,90 @@ function schedule_list() {
     var schedule_list = [];
 
     db.collection('Schedules').orderBy('visit_date', 'asc').get().then(queryDoc => {
-      queryDoc.forEach(scheduleDoc => {
-        if (scheduleDoc.data().staff_name === staff_name) {
-          schedule_list.push([scheduleDoc.data(),scheduleDoc.id]);
+      
+      if(staff_name == "admin"){
+        queryDoc.forEach(scheduleDoc => {
+            schedule_list.push([scheduleDoc.data(),scheduleDoc.id]);
+        });
 
+        var totalpages = (schedule_list.length - 1) / 5 + 1;
+        if (totalpages >= 3) {
+          var visiblePages = 3;
         }
-      });
+  
+        $('#pagination').twbsPagination({
+          totalPages: totalpages,
+          visiblePages: visiblePages,
+          prev: "이전",
+          next: "다음",
+          first: "<<",
+          last: ">>",
+          onPageClick: function (event, page) {
+            $('.schedule_box').eq(0).parent().html('');
+            onclick_pagination_admin(schedule_list, page);
+          }
+        });
 
-      console.log(schedule_list);
+      }else{
+        queryDoc.forEach(scheduleDoc => {
+          if (scheduleDoc.data().staff_name === staff_name) {
+            schedule_list.push([scheduleDoc.data(),scheduleDoc.id]);
+  
+          }
+        });
 
-      var totalpages = (schedule_list.length - 1) / 5 + 1;
-      if (totalpages >= 3) {
-        var visiblePages = 3;
+        var totalpages = (schedule_list.length - 1) / 5 + 1;
+        if (totalpages >= 3) {
+          var visiblePages = 3;
+        }
+  
+        $('#pagination').twbsPagination({
+          totalPages: totalpages,
+          visiblePages: visiblePages,
+          prev: "이전",
+          next: "다음",
+          first: "<<",
+          last: ">>",
+          onPageClick: function (event, page) {
+            $('.schedule_box').eq(0).parent().html('');
+            onclick_pagination_staff(schedule_list, page);
+          }
+        });
       }
-
-      $('#pagination').twbsPagination({
-        totalPages: totalpages,
-        visiblePages: visiblePages,
-        prev: "이전",
-        next: "다음",
-        first: "<<",
-        last: ">>",
-        onPageClick: function (event, page) {
-          $('.schedule_box').eq(0).parent().html('');
-        onclick_pagination(schedule_list, page);
-        }
-      });
 
     });
 
   });
 }
 
-function schedule_box(date, staff_name, purpose, confirm_status, doc_id) {
+function schedule_box_staff(date, visitor_name, purpose, confirm_status, visitor_phone_number,doc_id) {
   var status;
   if (confirm_status == 1) {
     status = `<div class="status_container">
-            <div class="confirm" onclick="confirm_clicked('${doc_id}','${date}')">승인</div>
+            <div class="confirm" onclick="confirm_clicked('${doc_id}','${date}','${visitor_phone_number}')">승인</div>
             <div class="reject" onclick="reject_clicked('${doc_id}')">거절</div>
             </div>`;
+  } else if (confirm_status == 2) {
+    status = `<div class="confirm_status">승인 완료됨</div>`;
+  } else if (confirm_status == 3) {
+    status = `<div class="confirm_status">승인 거절됨</div>`;
+  }
+
+  var schedule_box = `
+          <div class="schedule_box">
+              <div class="date">${date}</div>
+              <div class="visitor_name">${visitor_name}</div>
+              <div class="purpose">${purpose}</div>
+              ${status}
+          </div>
+      `;
+  return schedule_box;
+}
+
+function schedule_box_admin(date, visitor_name, purpose, confirm_status, doc_id) {
+  var status;
+  if (confirm_status == 1) {
+    status = `<div class="confirm_status">승인 대기중</div>`;
   } else if (confirm_status == 2) {
     status = `<div class="confirm_status" onclick="delete_clicked('${doc_id}')">일정 삭제</div>`;
   } else if (confirm_status == 3) {
@@ -117,7 +163,7 @@ function schedule_box(date, staff_name, purpose, confirm_status, doc_id) {
   var schedule_box = `
           <div class="schedule_box">
               <div class="date">${date}</div>
-              <div class="staff_name">${staff_name}</div>
+              <div class="visitor_name">${visitor_name}</div>
               <div class="purpose">${purpose}</div>
               ${status}
           </div>
@@ -125,28 +171,56 @@ function schedule_box(date, staff_name, purpose, confirm_status, doc_id) {
   return schedule_box;
 }
 
-function onclick_pagination(schedule_list, page) {
+function onclick_pagination_staff(schedule_list, page) {
   var start_position = (page - 1) * 5;
 
   if (start_position + 5 <= schedule_list.length) {
     for (var i = start_position; i < start_position + 5; i++) {
       var date = schedule_list[i][0].visit_date;
-      var staff_name = schedule_list[i][0].staff_name;
+      var visitor_name = schedule_list[i][0].visitor_name;
       var purpose = schedule_list[i][0].visit_purpose;
       var confirm_status = schedule_list[i][0].confirm_status;
+      var visitor_phone_number = schedule_list[i][0].visitor_phone_number;
       var doc_id = schedule_list[i][1];
 
-      $('#schedule_container').append(schedule_box(date, staff_name, purpose, confirm_status,doc_id));
+      $('#schedule_container').append(schedule_box_staff(date, visitor_name, purpose, confirm_status,visitor_phone_number,doc_id));
     }
   } else {
     for (var i = start_position; i < schedule_list.length; i++) {
       var date = schedule_list[i][0].visit_date;
-      var staff_name = schedule_list[i][0].staff_name;
+      var visitor_name = schedule_list[i][0].visitor_name;
+      var purpose = schedule_list[i][0].visit_purpose;
+      var confirm_status = schedule_list[i][0].confirm_status;
+      var visitor_phone_number = schedule_list[i][0].visitor_phone_number;
+      var doc_id = schedule_list[i][1];
+
+      $('#schedule_container').append(schedule_box_staff(date, visitor_name, purpose, confirm_status,visitor_phone_number,doc_id));
+    }
+  }
+}
+
+function onclick_pagination_admin(schedule_list, page) {
+  var start_position = (page - 1) * 5;
+
+  if (start_position + 5 <= schedule_list.length) {
+    for (var i = start_position; i < start_position + 5; i++) {
+      var date = schedule_list[i][0].visit_date;
+      var visitor_name = schedule_list[i][0].visitor_name;
       var purpose = schedule_list[i][0].visit_purpose;
       var confirm_status = schedule_list[i][0].confirm_status;
       var doc_id = schedule_list[i][1];
 
-      $('#schedule_container').append(schedule_box(date, staff_name, purpose, confirm_status,doc_id));
+      $('#schedule_container').append(schedule_box_admin(date, visitor_name, purpose, confirm_status,doc_id));
+    }
+  } else {
+    for (var i = start_position; i < schedule_list.length; i++) {
+      var date = schedule_list[i][0].visit_date;
+      var visitor_name = schedule_list[i][0].visitor_name;
+      var purpose = schedule_list[i][0].visit_purpose;
+      var confirm_status = schedule_list[i][0].confirm_status;
+      var doc_id = schedule_list[i][1];
+
+      $('#schedule_container').append(schedule_box_admin(date, visitor_name, purpose, confirm_status,doc_id));
     }
   }
 }

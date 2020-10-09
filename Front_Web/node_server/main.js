@@ -133,7 +133,25 @@ router.route('/schedule_list').get(function (req, res) {
     }else if(req.session.is_logined == true && req.session.is_visitor == false){
         //직원에 대한 방문 목록
         var uid = req.session.uid;
-        res.send(head.head_schedule_list_staff() + schedule_list.schedule_list_staff(uid) + body.body());
+
+        var staffs_db = admin.firestore().collection("Staffs");
+    
+        staffs_db.doc(uid).get().then(queryDoc => {
+            var name = queryDoc.data().name;
+            console.log(name);
+            
+            if(name == "admin"){
+                res.send(head.head_schedule_list_staff() + schedule_list.schedule_list_admin(uid) + body.body());
+            }else{
+                res.send(head.head_schedule_list_staff() + schedule_list.schedule_list_staff(uid) + body.body());
+            }
+
+        }).catch(function(error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            res.send(errorMessage);
+        });
     }else{
         console.log("로그인 후 이용하시기 바랍니다.");
         res.redirect("/");
@@ -185,6 +203,9 @@ router.route('/send_QR_code').post(function (req, res) {
     //console.log(req.session);
     var doc_id = req.body.doc_id;
     var date = req.body.date;
+    var phone_number = req.body.phone_number;
+
+    console.log("visitor phone number is "+phone_number)
 
     client.messages
     .create({
