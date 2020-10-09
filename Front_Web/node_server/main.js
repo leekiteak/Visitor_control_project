@@ -17,6 +17,7 @@ var FileStore = require('session-file-store')(session);
 var admin = require('firebase-admin');
 var serviceAccount = require('./cfg/vams-ef3c4-firebase-adminsdk-ie4uq-e7d74b048a.json');
 var twilioInfo = require('./cfg/twilio');
+var moment = require('moment');
 
 const client = require('twilio')(twilioInfo.accountSid, twilioInfo.authToken);
 
@@ -150,18 +151,26 @@ router.route('/QR_code').get(function (req, res) {
 //QR코드 정보 조회 요청
 router.route('/QR_code_request').post(function (req, res) {
     var doc_id = req.body.id;
-
     var schedules_db = admin.firestore().collection("Schedules");
     //날짜 확인 과정 추가하기
-
-    //console.log(doc_id + "in qrcode request");
+    var current_date = moment().format("YYYY-MM-DD");
+    
+    console.log("current_date : " + current_date);
+    console.log("doc_id : " + doc_id);
 
     schedules_db.doc(doc_id).get().then(queryDoc => {
 
-        
+        var visit_date = queryDoc.data().visit_date;
         var name = queryDoc.data().visitor_name;
+
+        console.log("visit_date : " + visit_date + "visitor_name : " + name);
+
         //console.log(name);
-        res.send(name);
+        if(current_date == visit_date){
+            res.send(name);
+        }else{
+            res.send("date is wrong");
+        }
 
     }).catch(function(error) {
         // Handle Errors here.

@@ -12,6 +12,7 @@
     "express-session": "^1.17.1",
     "firebase": "^7.17.1",
     "firebase-admin": "^9.0.0",
+    "moment": "^2.29.0",
     "session-file-store": "^1.4.0"
   }
 }
