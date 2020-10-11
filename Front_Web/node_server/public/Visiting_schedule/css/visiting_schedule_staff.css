@@ -19,6 +19,7 @@ div .top .right{
     width: 20%;
     height: 100%;
     float: left;
+    padding: 35px;
 }
 div .title{
     width: 100%;
@@ -32,7 +33,8 @@ div .title{
     width: 100%;
     height: 100%;
     text-align: center;
-    padding: 40px;
+    border: 0;
+    outline: 0;
 }
 .logo{
     width: 100%;
@@ -98,30 +100,36 @@ div .middle .right{
 .date{
     display: inline-block;
     text-align: center;
-    width: 24%;
+    width: 14%;
     height: 100%;
 }
 .visitor_name{
     display: inline-block;
     text-align: center;
-    width: 24%;
+    width: 14%;
     height: 100%;
+}
+.staff_name{
+    display: inline-block;
+    width: 14%;
+    height:100%
+
 }
 .purpose{
     display: inline-block;
     text-align: center;
-    width: 24%;
+    width: 14%;
     height: 100%;
 }
 .confirm_status{
     display: inline-block;
     text-align: center;
-    width: 24%;
+    width: 14%;
     height: 100%;
 }
 .status_container{
     display: inline-block;
-    width: 24%;
+    width: 14%;
     height: 100%;
 }
 
@@ -146,3 +154,15 @@ div .middle .right{
     background-color: aliceblue;
     border: 1px solid #d8d8d8;
 }
+.enter_time{
+    width: 12.5%;
+    height: 100%;
+
+}
+.exit_time{
+    width: 12.5%;
+    height: 100%;
+}
+
+
+

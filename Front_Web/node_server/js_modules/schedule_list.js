@@ -77,7 +77,7 @@ var schedule_list_admin = `
         <div class="title">방문 기록(관리인)</div>
       </div>
       <div class="right">
-        <div class="logout">로그아웃</div>
+        <button class="logout">로그아웃</button>
       </div>
     </div>
     <div class="middle">
