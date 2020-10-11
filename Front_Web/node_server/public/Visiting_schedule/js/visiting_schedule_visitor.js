@@ -64,8 +64,8 @@ function schedule_box(date, staff_name, purpose, confirm_status,doc_id) {
   var status;
   if (confirm_status == 1) {
     status = `<div class="status_container">
-    <div class="confirm" onclick="modify_clicked('${doc_id}')">수정</div>
-    <div class="reject" onclick="cancel_clicked('${doc_id}')">취소</div>
+    <button class="modify" onclick="modify_clicked('${doc_id}')">수정</button>
+    <button class="cancel" onclick="cancel_clicked('${doc_id}')">취소</button>
     </div>`;
   } else if (confirm_status == 2) {
     status = `<div class="confirm_status">승인 완료됨</div>`;

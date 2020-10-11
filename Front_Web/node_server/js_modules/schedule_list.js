@@ -12,7 +12,7 @@ var schedule_list_visitor = `
         <div class="title">방문 기록(방문자)</div>
       </div>
       <div class="right">
-        <div class="logout">로그아웃</div>
+        <button class="logout">로그아웃</button>
       </div>
     </div>
     <div class="middle">
@@ -22,7 +22,7 @@ var schedule_list_visitor = `
           <div class="date">방문 날짜</div>
           <div class="staff_name">직원 이름</div>
           <div class="purpose">방문 목적</div>
-          <div class="confirm_status">승인 상태</div>
+          <div class="confirm_status">상태</div>
         </div>
         <div class="div1">
           <div class="schedule_container" id ="schedule_container"></div>
@@ -32,7 +32,7 @@ var schedule_list_visitor = `
     </div>
     <div class="bottom">
       <ul class="pagination" id="pagination"></ul>
-      <div class="btn_register">새 방문 등록하기</div>
+      <button class="btn_register">새 방문 등록하기</button>
     </div>
   </div>
 `;
@@ -45,7 +45,7 @@ var schedule_list_staff = `
         <div class="title">방문 기록(직원)</div>
       </div>
       <div class="right">
-        <div class="logout">로그아웃</div>
+        <button class="logout">로그아웃</button>
       </div>
     </div>
     <div class="middle">

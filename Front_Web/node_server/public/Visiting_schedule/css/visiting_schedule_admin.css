@@ -100,31 +100,36 @@ div .middle .right{
 .date{
     display: inline-block;
     text-align: center;
-    width: 20%;
+    width: 14%;
     height: 100%;
 }
 .visitor_name{
     display: inline-block;
     text-align: center;
-    width: 20%;
+    width: 14%;
     height: 100%;
 }
+.staff_name{
+    display: inline-block;
+    width: 14%;
+    height:100%
 
+}
 .purpose{
     display: inline-block;
     text-align: center;
-    width: 35%;
+    width: 14%;
     height: 100%;
 }
 .confirm_status{
     display: inline-block;
     text-align: center;
-    width: 20%;
+    width: 14%;
     height: 100%;
 }
 .status_container{
     display: inline-block;
-    width: 20%;
+    width: 14%;
     height: 100%;
 }
 
@@ -151,7 +156,15 @@ div .middle .right{
     background-color: aliceblue;
     border: 1px solid #d8d8d8;
 }
+.enter_time{
+    width: 14%;
+    height: 100%;
 
+}
+.exit_time{
+    width: 14%;
+    height: 100%;
+}
 
 
 

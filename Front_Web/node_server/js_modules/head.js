@@ -3,6 +3,7 @@ module.exports.head_register_visitor_info = print_head_register_visitor_info;
 module.exports.head_register_schedule = print_head_register_schedule;
 module.exports.head_schedule_list_visitor = print_head_schedule_list_visitor;
 module.exports.head_schedule_list_staff = print_head_schedule_list_staff;
+module.exports.head_schedule_list_admin = print_head_schedule_list_admin;
 module.exports.head_modify_schedule = print_head_modify_schedule;
 module.exports.head_QR_code = print_head_QR_code;
 
@@ -116,6 +117,20 @@ var head_schedule_list_staff = `
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="/Visiting_schedule/js/jquery.twbsPagination.js"></script>
 `;
+//방문 일정 리스트 헤더(관리자)
+var head_schedule_list_admin = `
+    <!--css-->
+    <link rel="stylesheet" href="/Visiting_schedule/css/visiting_schedule_admin.css">
+
+    <!--js-->
+    <script src="/Visiting_schedule/js/visiting_schedule_staff.js"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="/Visiting_schedule/js/jquery.twbsPagination.js"></script>
+`;
 
 //QR코드 생성 헤더
 var head_QR_code = `
@@ -185,6 +200,9 @@ function print_head_schedule_list_visitor(){
 }
 function print_head_schedule_list_staff(){
     return html_default() + `${head_common} ${head_schedule_list_staff} </head> <body>`;
+}
+function print_head_schedule_list_admin(){
+    return html_default() + `${head_common} ${head_schedule_list_admin} </head> <body>`;
 }
 function print_head_modify_schedule(){
     return html_default() + `${head_common} ${head_modify_schedule} </head> <body>`;

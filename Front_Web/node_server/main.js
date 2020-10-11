@@ -141,7 +141,7 @@ router.route('/schedule_list').get(function (req, res) {
             console.log(name);
             
             if(name == "admin"){
-                res.send(head.head_schedule_list_staff() + schedule_list.schedule_list_admin(uid) + body.body());
+                res.send(head.head_schedule_list_admin() + schedule_list.schedule_list_admin(uid) + body.body());
             }else{
                 res.send(head.head_schedule_list_staff() + schedule_list.schedule_list_staff(uid) + body.body());
             }
