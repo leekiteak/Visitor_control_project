@@ -130,8 +130,8 @@ function schedule_box_staff(date, visitor_name, purpose, confirm_status, visitor
   var status;
   if (confirm_status == 1) {
     status = `<div class="status_container">
-            <div class="confirm" onclick="confirm_clicked('${doc_id}','${date}','${visitor_phone_number}')">승인</div>
-            <div class="reject" onclick="reject_clicked('${doc_id}')">거절</div>
+            <button class="confirm" onclick="confirm_clicked('${doc_id}','${date}','${visitor_phone_number}')">승인</button>
+            <button class="reject" onclick="reject_clicked('${doc_id}')">거절</button>
             </div>`;
   } else if (confirm_status == 2) {
     status = `<div class="confirm_status">승인 완료됨</div>`;

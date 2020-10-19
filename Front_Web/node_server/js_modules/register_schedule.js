@@ -71,7 +71,7 @@ var register_schedule = `
       <div class="right"></div>
     </div>
     <div class="bottom">
-      <div class="btn_register" style="text-align:center">확인</div>
+      <button class="btn_register" style="text-align:center">확인</button>
     </div>
   </div>
 `;

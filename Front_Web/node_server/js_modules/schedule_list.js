@@ -9,7 +9,7 @@ var schedule_list_visitor = `
         <div class="logo">방문자 등록 서비스</div>
       </div>
       <div class="center">
-        <div class="title">방문 기록(방문자)</div>
+        <div class="title">방문 기록</div>
       </div>
       <div class="right">
         <button class="logout">로그아웃</button>
@@ -42,7 +42,7 @@ var schedule_list_staff = `
     <div class="top">
       <div class="left"></div>
       <div class="center">
-        <div class="title">방문 기록(직원)</div>
+        <div class="title">방문 기록(직원용)</div>
       </div>
       <div class="right">
         <button class="logout">로그아웃</button>
@@ -74,7 +74,7 @@ var schedule_list_admin = `
     <div class="top">
       <div class="left"></div>
       <div class="center">
-        <div class="title">방문 기록(관리인)</div>
+        <div class="title">방문 기록(관리자용)</div>
       </div>
       <div class="right">
         <button class="logout">로그아웃</button>
