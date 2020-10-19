@@ -3,17 +3,16 @@ module.exports.register_schedule = print_register_schedule;
 var register_schedule = `
   <div>
     <div class="top">
-    <div class="left">
-      <div class="logo">방문자 등록 서비스</div>
+      <div class="left">
+        <div class="logo">방문자 등록 서비스</div>
+      </div>
+      <div class="center">
+        <div class="title">방문 등록</div>
+      </div>
+      <div class="right">
+      </div>
     </div>
-    <div class="center">
-      <div class="title">방문 등록</div>
-    </div>
-    <div class="right">
-    </div>
-  </div>
-      
-    </div>
+    
     <div class="middle">
       <div class="left"></div>
       <div class="center">
@@ -71,7 +70,7 @@ var register_schedule = `
       <div class="right"></div>
     </div>
     <div class="bottom">
-      <button class="btn_register" style="text-align:center">확인</button>
+      <button class="btn_register">확인</button>
     </div>
   </div>
 `;
