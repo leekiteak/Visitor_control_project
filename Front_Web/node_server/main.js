@@ -166,14 +166,17 @@ router.route('/QR_code').get(function (req, res) {
     res.send(head.head_QR_code() + QR_code.qr_code(doc_id,date) + body.body());
 });
 
-//QR코드 정보 조회 요청
-router.route('/QR_code_request').post(function (req, res) {
+//QR코드 visit 요청
+router.route('/QR_visit_request').post(function (req, res) {
     var doc_id = req.body.id;
     var schedules_db = admin.firestore().collection("Schedules");
     //날짜 확인 과정 추가하기
-    var current_date = moment().format("YYYY-MM-DD");
-    
+    var date_info = moment().format("YYYY-MM-DD HH:mm:ss");
+    var current_date = date_info.substr(0,10);
+    var time = date_info.substr(11,5);
+
     console.log("current_date : " + current_date);
+    console.log("time : " + time);
     console.log("doc_id : " + doc_id);
 
     schedules_db.doc(doc_id).get().then(queryDoc => {
@@ -185,10 +188,80 @@ router.route('/QR_code_request').post(function (req, res) {
 
         //console.log(name);
         if(current_date == visit_date){
-            res.send(name);
+            schedules_db.doc(doc_id).update({
+                r_visit_time: time,
+                is_visited: 1,
+              }).then(function (){
+                res.send(doc_id);
+              })
+              .catch(function(error) {
+                // Handle Errors here.
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                alert(errorMessage);
+              });
         }else{
             res.send("date is wrong");
         }
+
+    }).catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        res.send(errorMessage);
+
+    });
+});
+
+//QR코드 exit 요청
+router.route('/QR_exit_request').post(function (req, res) {
+    var doc_id = req.body.id;
+    var schedules_db = admin.firestore().collection("Schedules");
+    //날짜 확인 과정 추가하기
+    var date_info = moment().format("YYYY-MM-DD HH:mm:ss");
+    var current_date = date_info.substr(0,10);
+    var time = date_info.substr(11,5);
+
+    console.log("current_date : " + current_date);
+    console.log("time : " + time);
+    console.log("doc_id : " + doc_id);
+
+    schedules_db.doc(doc_id).get().then(queryDoc => {
+
+        var r_visit_time = queryDoc.data().r_visit_time;
+
+        console.log("r_visit_date : " + r_visit_time );
+
+        var v_hour = r_visit_time.substr(0,2);
+        var v_minute = r_visit_time.substr(3,2);
+        
+        var e_hour = time.substr(0,2);
+        var e_minute = time.substr(3,2);
+
+        var cal_time = (parseInt(e_hour)*60 + parseInt(e_minute)) - (parseInt(v_hour)*60 + parseInt(v_minute));
+        var s_hour = cal_time/60;
+        var s_minute = cal_time - (s_hour*60);
+
+        if(s_hour == 0){
+            var time_of_stay = String(s_minute)+"분"; 
+        }else{
+            var time_of_stay = String(s_hour)+"시간"+String(s_minute)+"분"; 
+        }
+
+        console.log("time_of_stay : " + time_of_stay );
+
+        schedules_db.doc(doc_id).update({
+            r_exit_time: time,
+            time_of_stay: time_of_stay,
+        }).then(function (){
+            res.send(doc_id);
+        }).catch(function(error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            alert(errorMessage);
+        });
+
 
     }).catch(function(error) {
         // Handle Errors here.

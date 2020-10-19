@@ -45,7 +45,11 @@ function register_schedule(date,time,staff_name,visit_purpose,visitor_name,birth
     visit_purpose: visit_purpose,
     visitor_phone_number: phone_number,
     visitor_uid: uid,
-    confirm_status: 1
+    confirm_status: 1,
+    r_visit_time: "00:00",
+    r_exit_time: "00:00",
+    is_visited: 0,
+    time_of_stay: 0 
   };
 
   db.collection('Schedules').add(data).then(function (){
