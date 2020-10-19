@@ -182,24 +182,29 @@ router.route('/QR_visit_request').post(function (req, res) {
     schedules_db.doc(doc_id).get().then(queryDoc => {
 
         var visit_date = queryDoc.data().visit_date;
+        var is_visited = queryDoc.data().is_visited;
         var name = queryDoc.data().visitor_name;
 
         console.log("visit_date : " + visit_date + "visitor_name : " + name);
 
         //console.log(name);
         if(current_date == visit_date){
-            schedules_db.doc(doc_id).update({
-                r_visit_time: time,
-                is_visited: 1,
-              }).then(function (){
-                res.send(doc_id);
-              })
-              .catch(function(error) {
-                // Handle Errors here.
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                alert(errorMessage);
-              });
+            if(is_visited == 0){
+                schedules_db.doc(doc_id).update({
+                    r_visit_time: time,
+                    is_visited: 1,
+                  }).then(function (){
+                    res.send(doc_id);
+                  })
+                  .catch(function(error) {
+                    // Handle Errors here.
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    alert(errorMessage);
+                  });
+            }else{
+                res.send("uid is duplicated");
+            }
         }else{
             res.send("date is wrong");
         }
@@ -215,7 +220,7 @@ router.route('/QR_visit_request').post(function (req, res) {
 
 //QR코드 exit 요청
 router.route('/QR_exit_request').post(function (req, res) {
-    var doc_id = req.body.id;
+    var doc_id = req.query.message;
     var schedules_db = admin.firestore().collection("Schedules");
     //날짜 확인 과정 추가하기
     var date_info = moment().format("YYYY-MM-DD HH:mm:ss");
@@ -229,6 +234,7 @@ router.route('/QR_exit_request').post(function (req, res) {
     schedules_db.doc(doc_id).get().then(queryDoc => {
 
         var r_visit_time = queryDoc.data().r_visit_time;
+        var is_visited = queryDoc.data().is_visited;
 
         console.log("r_visit_date : " + r_visit_time );
 
@@ -239,7 +245,8 @@ router.route('/QR_exit_request').post(function (req, res) {
         var e_minute = time.substr(3,2);
 
         var cal_time = (parseInt(e_hour)*60 + parseInt(e_minute)) - (parseInt(v_hour)*60 + parseInt(v_minute));
-        var s_hour = cal_time/60;
+        
+        var s_hour = parseInt(cal_time/60);
         var s_minute = cal_time - (s_hour*60);
 
         if(s_hour == 0){
@@ -250,17 +257,21 @@ router.route('/QR_exit_request').post(function (req, res) {
 
         console.log("time_of_stay : " + time_of_stay );
 
-        schedules_db.doc(doc_id).update({
-            r_exit_time: time,
-            time_of_stay: time_of_stay,
-        }).then(function (){
-            res.send(doc_id);
-        }).catch(function(error) {
-            // Handle Errors here.
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            alert(errorMessage);
-        });
+        if(is_visited == 1){
+            schedules_db.doc(doc_id).update({
+                r_exit_time: time,
+                time_of_stay: time_of_stay,
+            }).then(function (){
+                res.send(doc_id);
+            }).catch(function(error) {
+                // Handle Errors here.
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                alert(errorMessage);
+            });
+        }else{
+            res.send("you should Enter first");
+        }
 
 
     }).catch(function(error) {
