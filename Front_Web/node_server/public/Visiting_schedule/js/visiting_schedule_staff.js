@@ -150,22 +150,32 @@ function schedule_box_staff(date, visitor_name, purpose, confirm_status, visitor
   return schedule_box;
 }
 
-function schedule_box_admin(date, visitor_name, purpose, confirm_status, doc_id) {
+function schedule_box_admin(date, visitor_name, staff_name, purpose, confirm_status, doc_id, r_visit_time, r_exit_time, time_of_stay) {
   var status;
+  var time;
   if (confirm_status == 1) {
     status = `<div class="confirm_status">승인 대기중</div>`;
   } else if (confirm_status == 2) {
-    status = `<div class="confirm_status" onclick="delete_clicked('${doc_id}')">일정 삭제</div>`;
+    status = `<button class="reject" onclick="delete_clicked('${doc_id}')">일정 삭제</button>`;
   } else if (confirm_status == 3) {
     status = `<div class="confirm_status">승인 거절됨</div>`;
   }
 
+  if(time_of_stay != 0){
+    time = `<div class="time">${r_visit_time}</div>
+            <div class="time">${r_exit_time}</div>
+            <div class="time">${time_of_stay}</div>`;
+  }else{
+    time = ``;
+  }
   var schedule_box = `
           <div class="schedule_box">
               <div class="date">${date}</div>
               <div class="visitor_name">${visitor_name}</div>
+              <div class="staff_name">${staff_name}</div>
               <div class="purpose">${purpose}</div>
               ${status}
+              ${time}
           </div>
       `;
   return schedule_box;
@@ -206,21 +216,31 @@ function onclick_pagination_admin(schedule_list, page) {
     for (var i = start_position; i < start_position + 5; i++) {
       var date = schedule_list[i][0].visit_date;
       var visitor_name = schedule_list[i][0].visitor_name;
+      var staff_name = schedule_list[i][0].staff_name;
       var purpose = schedule_list[i][0].visit_purpose;
       var confirm_status = schedule_list[i][0].confirm_status;
+      var r_exit_time = schedule_list[i][0].r_exit_time;
+      var r_visit_time = schedule_list[i][0].r_visit_time;
+      var time_of_stay = schedule_list[i][0].time_of_stay;
+
       var doc_id = schedule_list[i][1];
 
-      $('#schedule_container').append(schedule_box_admin(date, visitor_name, purpose, confirm_status,doc_id));
+      $('#schedule_container').append(schedule_box_admin(date, visitor_name,staff_name, purpose, confirm_status,doc_id, r_visit_time, r_exit_time, time_of_stay));
     }
   } else {
     for (var i = start_position; i < schedule_list.length; i++) {
       var date = schedule_list[i][0].visit_date;
       var visitor_name = schedule_list[i][0].visitor_name;
+      var staff_name = schedule_list[i][0].staff_name;
       var purpose = schedule_list[i][0].visit_purpose;
       var confirm_status = schedule_list[i][0].confirm_status;
+      var r_exit_time = schedule_list[i][0].r_exit_time;
+      var r_visit_time = schedule_list[i][0].r_visit_time;
+      var time_of_stay = schedule_list[i][0].time_of_stay;
+
       var doc_id = schedule_list[i][1];
 
-      $('#schedule_container').append(schedule_box_admin(date, visitor_name, purpose, confirm_status,doc_id));
+      $('#schedule_container').append(schedule_box_admin(date, visitor_name, staff_name, purpose, confirm_status,doc_id, r_visit_time, r_exit_time, time_of_stay));
     }
   }
 }

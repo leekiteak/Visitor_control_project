@@ -86,8 +86,12 @@ var schedule_list_admin = `
         <div class="category">
           <div class="date">방문 날짜</div>
           <div class="visitor_name">방문자 이름</div>
+          <div class="staff_name">직원 이름</div>
           <div class="purpose">방문 목적</div>
           <div class="confirm_status">승인 상태</div>
+          <div class="time">시간(Entry)</div>
+          <div class="time">시간(Exit)</div>
+          <div class="time">시간(Stay)</div>
         </div>
         <div class="div1">
           <div class="schedule_container" id = "schedule_container"></div>
