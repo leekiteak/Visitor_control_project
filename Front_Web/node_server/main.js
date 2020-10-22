@@ -245,7 +245,7 @@ router.route('/QR_exit_request').post(function (req, res) {
         var e_minute = time.substr(3,2);
 
         var cal_time = (parseInt(e_hour)*60 + parseInt(e_minute)) - (parseInt(v_hour)*60 + parseInt(v_minute));
-        
+
         var s_hour = parseInt(cal_time/60);
         var s_minute = cal_time - (s_hour*60);
 
@@ -261,6 +261,7 @@ router.route('/QR_exit_request').post(function (req, res) {
             schedules_db.doc(doc_id).update({
                 r_exit_time: time,
                 time_of_stay: time_of_stay,
+                is_visited: 0,
             }).then(function (){
                 res.send(doc_id);
             }).catch(function(error) {
