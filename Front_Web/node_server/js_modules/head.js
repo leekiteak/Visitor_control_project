@@ -6,6 +6,7 @@ module.exports.head_schedule_list_staff = print_head_schedule_list_staff;
 module.exports.head_schedule_list_admin = print_head_schedule_list_admin;
 module.exports.head_modify_schedule = print_head_modify_schedule;
 module.exports.head_QR_code = print_head_QR_code;
+module.exports.head_register_visitor_face = print_head_register_visitor_face;
 
 var head_common = `
     <!--css-->
@@ -143,6 +144,15 @@ var head_QR_code = `
     <script src="/QR_code/js/qr_code.js"></script>
 `;
 
+//방문자 얼굴 사진 등록 헤더
+var head_register_visitor_face = `
+    <!--css-->
+    <link rel="stylesheet" href="/Register_visitor_face/css/register_visitor_face.css">
+
+    <!--js-->
+    <script type="text/javascript" src="/Register_visitor_face/js/register_visitor_face.js"></script>
+`;
+
 var head_signup_js = `
     <!--js-->
     <script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-app.js"></script>
@@ -210,4 +220,8 @@ function print_head_modify_schedule(){
 
 function print_head_QR_code(){
     return html_default() + `${head_common} ${head_QR_code} </head> <body>`;
+}
+
+function print_head_register_visitor_face(){
+    return html_default() + `${head_common} ${head_register_visitor_face} </head> <body>`;
 }

@@ -20,9 +20,12 @@ var twilioInfo = require('./cfg/twilio');
 var moment = require('moment');
 
 const client = require('twilio')(twilioInfo.accountSid, twilioInfo.authToken);
+const {Storage} = require('@google-cloud/storage');
+const storage = new Storage();
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
+  credential: admin.credential.cert(serviceAccount),
+  storageBucket: "vams-ef3c4.appspot.com"
 });
 
 //따로 만든 모듈
@@ -32,6 +35,7 @@ var main = require('./js_modules/index'); //main화면
 var body = require('./js_modules/body'); 
 var register_visitor_info = require('./js_modules/register_visitor_info');
 var register_schedule = require('./js_modules/register_schedule');
+var register_visitor_face = require('./js_modules/register_visitor_face');
 var schedule_list = require('./js_modules/schedule_list');
 var modify_schedule = require('./js_modules/modify_schedule');
 var QR_code = require('./js_modules/QR_code');
@@ -63,6 +67,13 @@ router.route('/').get(function (req, res) {
     }else{
         res.send(head.head_all() + main.main() + body.body());
     }
+});
+
+//방문자 얼굴 사진 등록
+router.route('/register_visitor_face').get(function (req, res) {
+
+    res.send(head.head_register_visitor_face() + register_visitor_face.register_visitor_face() + body.body());
+    
 });
 
 //방문자 정보 신규 등록(회원가입)
@@ -326,6 +337,117 @@ router.route('/log_out_process').get(function (req, res) {
     req.session.destroy(function(err){
         res.redirect('/');
     });
+});
+
+//run python shell
+function activate_python(){
+      
+    var {PythonShell} = require('python-shell');
+    /*
+
+    let pyshell = new PythonShell('face_recog.py');
+    pyshell.send('hello');
+
+    pyshell.on('message', function (message) {
+        // received a message sent from the Python script (a simple "print" statement)
+        //console.log(message);
+    });
+      
+      // end the input stream and allow the process to exit
+    pyshell.end(function (err,code,signal) {
+        if (err) throw err;
+        console.log('The exit code was: ' + code);
+        console.log('The exit signal was: ' + signal);
+        console.log('finished');
+    });
+    */
+    var options = {
+        scriptPath: path.join(__dirname, ""),
+        args: ['1','2']
+    };
+    
+    PythonShell.run('face_recog.py',options, function (err,results) {
+        if (err) throw err;
+        console.log('finished with:',results);
+        console.log('data: ',results[0]);
+        //return results
+    });  
+}
+
+//storage 접근
+router.route('/storage_access').get(function (req, res) {
+    var bucket = admin.storage().bucket();
+
+    // Create a reference under which you want to list
+    bucket.getFiles(function(err, files) {
+        if (!err) {
+            // files is an array of File objects.
+            var num_file = 0;
+            files.forEach(function(file,index){
+                var str_arr = file.name.split('/');
+                if(str_arr[1] != ''){
+                    num_file++;
+                }
+            });
+
+            files.forEach(function(file,index){
+                
+                if(file.name.includes('faces_in')){
+                    var strarray = file.name.split('/')
+                    
+                    if(strarray[1] != ''){
+                        var localfilename = './faces_in/'+strarray[1]
+                        
+                        file.createReadStream()
+                            .on('error', function(err) {
+                                console.log(err);
+                            }).on('response', function(response) {
+                                // Server connected and responded with the specified status and headers.
+                            }).on('end', function() {
+                                // The file is fully downloaded.
+                                num_file--;
+                                console.log("download is completed in ",localfilename);
+                                if(num_file == 0){
+                                    console.log("activate python file");
+                                    activate_python();
+                                    //console.log("result = ",result);
+                                }
+                            })
+                            .pipe(fs.createWriteStream(localfilename));                        
+                    }
+                
+                } else if(file.name.includes('faces_out')) {
+                    var strarray = file.name.split('/')
+                    if(strarray[1] != ''){
+                        var localfilename = './faces_out/'+strarray[1]
+                        
+                        file.createReadStream()
+                            .on('error', function(err) {
+                                console.log(err)
+                            }).on('response', function(response) {
+                                // Server connected and responded with the specified status and headers.
+                            }).on('end', function() {
+                                // The file is fully downloaded.
+                                num_file--;
+                                console.log("download is completed in ",localfilename);
+                                if(num_file == 0){
+                                    console.log("activate python file");
+                                    activate_python();
+                                    //console.log("result = ",result);
+                                }
+                            })
+                            .pipe(fs.createWriteStream(localfilename));
+                    }
+                    
+                }
+            });
+            //console.log("file work is done")
+        }else{
+            console.log(err)
+        }
+    });
+
+    console.log("after storage_access")
 });
 
 app.use('/', router);
