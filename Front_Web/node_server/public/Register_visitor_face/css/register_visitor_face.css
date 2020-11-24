@@ -43,6 +43,10 @@ div .title{
 }
 div .middle{
     height: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 div .bottom{
     height: 100px;
@@ -63,6 +67,23 @@ div .bottom{
     border: 0;
     outline: 0;
 }
+.btn_addPic{
+    height: 10%;
+    width: 30%;
+    background-color: lightgrey;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 0;
+    outline: 0;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    
+
+}
 
 div .middle .center{
     width: 60%;
@@ -70,61 +91,23 @@ div .middle .center{
     font-family: 'Black Han Sans', sans-serif;
     /*position: absolute;
     left: 10px*/
+    
 }
 
-.div1{
+.img{
+    outline: 2px dashed #92b0b3 ;
+    outline-offset:-10px;  
+    text-align: center;
+    transition: all .15s ease-in-out;
     width: 100%;
-    height: 10%;
+    height: 75%;
+    background-color: gray;
     display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-}
-.div2{
-    width: 100%;
-    height: 10%;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-}
-.div3{
-    width: 100%;
-    height: 10%;
-    display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
-.div4{
-    width: 100%;
-    height: 10%;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-}
-.div5{
-    width: 100%;
-    height: 10%;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-}
-.div6{
-    width: 100%;
-    height: 10%;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-}
-.div7{
-    width: 100%;
-    height: 10%;
-}
 
 div .middle .left{
     width: 20%;

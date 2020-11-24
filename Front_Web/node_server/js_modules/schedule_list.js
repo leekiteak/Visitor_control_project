@@ -13,6 +13,7 @@ var schedule_list_visitor = `
       </div>
       <div class="right">
         <button class="logout">로그아웃</button>
+        <button class="register_pic">사진 등록</button>
       </div>
     </div>
     <div class="middle">

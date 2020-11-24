@@ -58,7 +58,7 @@ var register_visitor_info = `
       <div class="right"></div>
     </div>
     <div class="bottom">
-      <div class="btn_register" style="text-align:center">완료</div>
+      <button class="btn_register" style="text-align:center">완료</button>
     </div>
   </div>
 `;

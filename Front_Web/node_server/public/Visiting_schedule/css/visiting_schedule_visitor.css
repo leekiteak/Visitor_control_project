@@ -20,7 +20,10 @@ div .top .right{
     width: 20%;
     height: 100%;
     float: left;
-    padding: 35px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 div .title{
     width: 100%;
@@ -31,8 +34,8 @@ div .title{
     text-align: center;
 }
 .logout{
-    width: 100%;
-    height: 100%;
+    width: 70%;
+    height: 30%;
     text-align: center;
     border: 0;
     outline: 0;
@@ -42,6 +45,14 @@ div .title{
     height: 100%;
     text-align: center;
     font-weight: 700;
+}
+.register_pic{
+    width: 70%;
+    height: 30%;
+    text-align: center;
+    border: 0;
+    outline: 0;
+    background-color: azure;
 }
 div .middle{
     height: 500px;
