@@ -362,11 +362,11 @@ function activate_python(){
     });
     */
     var options = {
-        scriptPath: path.join(__dirname, ""),
+        scriptPath: path.join(__dirname, 'face_recognition'),
         args: ['1','2']
     };
     
-    PythonShell.run('face_recog.py',options, function (err,results) {
+    PythonShell.run('./demo_video.py',options, function (err,results) {
         if (err) throw err;
         console.log('finished with:',results);
         console.log('data: ',results[0]);
@@ -376,9 +376,11 @@ function activate_python(){
 
 //storage 접근
 router.route('/storage_access').get(function (req, res) {
+
+    activate_python();
+    /*
     var bucket = admin.storage().bucket();
 
-    // Create a reference under which you want to list
     bucket.getFiles(function(err, files) {
         if (!err) {
             // files is an array of File objects.
@@ -446,6 +448,7 @@ router.route('/storage_access').get(function (req, res) {
             console.log(err)
         }
     });
+    */
 
     console.log("after storage_access")
 });
