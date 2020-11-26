@@ -43,7 +43,8 @@ function register_visitor(id, password,name,birth_date,phone_number) {
         var data = {
           name: name,
           birth_date: birth_date,
-          phone_number: phone_number
+          phone_number: phone_number,
+          face: false
         };
 
         db.collection('Visitors').doc(uid).set(data).then(function (){

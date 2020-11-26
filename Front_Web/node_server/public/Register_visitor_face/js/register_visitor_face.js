@@ -1,3 +1,4 @@
+/*
 $(document).ready(function() {
     var placeholderTarget = $('.textbox input[type="text"], .textbox input[type="password"]');
     //포커스시
@@ -12,28 +13,45 @@ $(document).ready(function() {
       }
     });
 
-    $("#visitor_name").val(name);
-    $("#birth_date").val(birth_date);
-    $("#phone_number").val(phone_number);
-  });
-//확인 클릭 시
-$(document).on("click", ".btn_register", function () {
-  var date = $("#date").val();
-  var time = $("#time").val();
-  var staff_name = $("#staff_name").val();
-  var visit_purpose = $("#visit_purpose").val();
+});
+*/
 
-  if (date.length == 0 || time.length == 0 || staff_name.length == 0 ||visit_purpose.length == 0) {
-    alert("정보를 입력 해주세요.");
-  }else{
-    console.log(date + " : " + time + " : " + staff_name+ " : " +visit_purpose);
+function readURL(input) {
+  if (input.files && input.files[0]) {
+   var reader = new FileReader();
+   
+   reader.onload = function (e) {
+    $('#image_section').attr('src', e.target.result);  
+   }
+   
+   reader.readAsDataURL(input.files[0]);
+   }
+ }
 
-    register_schedule(date,time,staff_name,visit_purpose,name,birth_date,phone_number);
-  }
-
-  //location.href = "/schedule_list";
+//사진 선택 클릭 시
+$(document).on("change", "#imginput", function () {
+  readURL(this);
 });
 
+//확인 클릭 시
+$(document).on("click", ".btn_register", function () {
+  var ref = storage.ref();
+  var file = document.querySelector("#imginput").files[0];
+  var filetype = file.name.split('.')
+  var path = "faces_in_server/"+uid+'.'+filetype[1];
+  var metadata = {
+    contentType:file.type
+  }
+
+  console.log(path);
+  var task = ref.child(path).put(file,metadata)
+
+  task.then(function(){
+    console.log("upload is completed")
+    location.href = "/face_register_process";
+  })
+});
+/*
 function register_schedule(date,time,staff_name,visit_purpose,visitor_name,birth_date,phone_number){
 
   var data = {
@@ -64,4 +82,4 @@ function register_schedule(date,time,staff_name,visit_purpose,visitor_name,birth
     alert(errorMessage);
   });
 
-}
+}*/

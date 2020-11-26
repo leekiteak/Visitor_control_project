@@ -71,8 +71,13 @@ router.route('/').get(function (req, res) {
 
 //방문자 얼굴 사진 등록
 router.route('/register_visitor_face').get(function (req, res) {
-
-    res.send(head.head_register_visitor_face() + register_visitor_face.register_visitor_face() + body.body());
+    if(req.session.is_logined == true){
+        var uid = req.session.uid;
+        res.send(head.head_register_visitor_face() + register_visitor_face.register_visitor_face(uid) + body.body());
+    }else{
+        console.log("로그인 후 이용하시기 바랍니다.");
+        res.redirect("/");
+    }
     
 });
 
@@ -95,8 +100,15 @@ router.route('/register_schedule').get(function (req, res) {
             var phone_number = queryDoc.data().phone_number;
             var birth_date = queryDoc.data().birth_date;
             var name = queryDoc.data().name;
+            var face = queryDoc.data().face;
+            console.log(face);
 
-            res.send(head.head_register_schedule() + register_schedule.register_schedule(uid,name,birth_date,phone_number) + body.body());
+            if(face){
+                res.send(head.head_register_schedule() + register_schedule.register_schedule(uid,name,birth_date,phone_number) + body.body());
+            }else{
+                console.log("얼굴 등록을 먼저 해주세요!");
+                res.redirect("/schedule_list");
+            }
         });
 
     }else{
@@ -302,7 +314,7 @@ router.route('/send_QR_code').post(function (req, res) {
     var phone_number = req.body.phone_number;
 
     console.log("visitor phone number is "+phone_number)
-
+    /*
     client.messages
     .create({
         body: 'http://vams.iptime.org:8080/QR_code?doc_id='+doc_id+'&date='+date,   
@@ -310,6 +322,7 @@ router.route('/send_QR_code').post(function (req, res) {
         to: '+821044098230'
     })
     .then(message => console.log(message));
+    */
     res.send("success!!!!");
 
 });
@@ -322,14 +335,34 @@ router.route('/log_in_process').post(function (req, res) {
         req.session.uid = req.body.uid;
         req.session.is_logined = true;
         req.session.is_visitor = true;
+        req.session.is_picture = false;
     }else if(req.body.is_visitor === "false"){
         req.session.email = req.body.email;
         req.session.uid = req.body.uid;
         req.session.is_logined = true;
         req.session.is_visitor = false;
+        req.session.is_picture = false;
     }
 
     res.send("success");
+});
+
+//얼굴 등록 후 세션에 저장
+router.route('/face_register_process').get(function (req, res) {
+    var visitors_db = admin.firestore().collection("Visitors");
+    var uid = req.session.uid;
+    visitors_db.doc(uid).update({
+        face: true,
+      }).then(function (){
+        console.log("c-bal");
+        res.redirect("/schedule_list");
+      })
+      .catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        alert(errorMessage);
+      });
 });
 
 //로그아웃 정보 세션 삭제
@@ -343,42 +376,90 @@ router.route('/log_out_process').get(function (req, res) {
 function activate_python(){
       
     var {PythonShell} = require('python-shell');
-    /*
 
-    let pyshell = new PythonShell('face_recog.py');
-    pyshell.send('hello');
-
-    pyshell.on('message', function (message) {
-        // received a message sent from the Python script (a simple "print" statement)
-        //console.log(message);
-    });
-      
-      // end the input stream and allow the process to exit
-    pyshell.end(function (err,code,signal) {
-        if (err) throw err;
-        console.log('The exit code was: ' + code);
-        console.log('The exit signal was: ' + signal);
-        console.log('finished');
-    });
-    */
     var options = {
-        scriptPath: path.join(__dirname, 'face_recognition'),
-        args: ['1','2']
+        scriptPath: path.join(__dirname, 'face_recognition')
+        //args: ['1','2']
     };
+    /*
+    let pyshell = new PythonShell('demo_video.py', options) // Options 설정 가능
+
+    // stdin을 통해 Python Script에 변수 전달
+    //pyshell.send('hello')
+    //pyshell.send('world')
+    // Python Script로부터 출력된 결과 값 받기(Python Script의 print에서 받아오는 값이 msg임)
+    pyshell.on('message', function(message) {
+        console.log(message);
+        //res.send("done");
+      })
+
+    // Python Script의 프로세스 종료하기                
+        pyshell.end((err, code, signal) => {
+	    if(err) throw err;
+        console.log('The exit code was: ' + code);
+  	    console.log('The exit signal was: ' + signal);
+        console.log('finished');
+        res.send("done!!");
+    })*/
     
     PythonShell.run('./demo_video.py',options, function (err,results) {
         if (err) throw err;
         console.log('finished with:',results);
-        console.log('data: ',results[0]);
-        //return results
+        console.log('data: ',results[1]);
+        update_visit_info(results[1]);
+        
     });  
 }
+function update_visit_info(uid){
+    console.log(uid);
 
-//storage 접근
-router.route('/storage_access').get(function (req, res) {
+    //날짜 확인 과정 추가하기
+    var date_info = moment().format("YYYY-MM-DD HH:mm:ss");
+    var current_date = date_info.substr(0,10);
+    var time = date_info.substr(11,5);
+    var schedules_db = admin.firestore().collection("Schedules");
 
-    activate_python();
-    /*
+    console.log("current_date : " + current_date);
+    console.log("time : " + time);
+    console.log("uid : " + uid);
+
+    var all_schedule = schedules_db.get().then(queryDoc => {
+        queryDoc.forEach(doc=>{
+            console.log(doc.id,'=>',doc.data().visit_date,doc.data().visitor_uid ,doc.data().confirm_status);
+            if(doc.data().visit_date == current_date && doc.data().visitor_uid == uid && doc.data().confirm_status == 2 && doc.data().is_visited == 0){
+                schedules_db.doc(doc.id).update({
+                    r_visit_time: time,
+                    is_visited: 1,
+                  }).then(function (){
+                      console.log("visit_process is completed successfully");
+                      return doc.data().visitor_name;
+                  })
+                  .catch(function(error) {
+                    // Handle Errors here.
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    alert(errorMessage);
+                  });
+            }
+            return "No matching schedule!!";
+        });
+    }).catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        console.log(errorMessage);
+        //res.send(errorMessage);
+
+    });
+
+}
+
+//방문자 visit face 인식
+router.route('/face_in').get(function (req, res) {
+
+    //activate_python();
+    var is_correct_schedule = 0;
+    var name = '';
     var bucket = admin.storage().bucket();
 
     bucket.getFiles(function(err, files) {
@@ -394,11 +475,11 @@ router.route('/storage_access').get(function (req, res) {
 
             files.forEach(function(file,index){
                 
-                if(file.name.includes('faces_in')){
+                if(file.name.includes('faces_in_server')){
                     var strarray = file.name.split('/')
                     
                     if(strarray[1] != ''){
-                        var localfilename = './faces_in/'+strarray[1]
+                        var localfilename = './face_recognition/faces_in_server/'+strarray[1]
                         
                         file.createReadStream()
                             .on('error', function(err) {
@@ -411,17 +492,75 @@ router.route('/storage_access').get(function (req, res) {
                                 console.log("download is completed in ",localfilename);
                                 if(num_file == 0){
                                     console.log("activate python file");
-                                    activate_python();
-                                    //console.log("result = ",result);
+                                    var {PythonShell} = require('python-shell');
+
+                                    var options = {
+                                        scriptPath: path.join(__dirname, 'face_recognition')
+                                    };
+                                    
+                                    PythonShell.run('./demo_video.py',options, function (err,results) {
+                                        if (err) throw err;
+                                        //console.log('finished with:',results);
+                                        console.log('python result : ',results[1]);
+                                        
+                                        var uid = results[1];
+
+                                        //날짜 확인 과정 추가하기
+                                        var date_info = moment().format("YYYY-MM-DD HH:mm:ss");
+                                        var current_date = date_info.substr(0,10);
+                                        var time = date_info.substr(11,5);
+                                        var schedules_db = admin.firestore().collection("Schedules");
+
+                                        console.log("current_date : " + current_date);
+                                        console.log("time : " + time);
+                                        console.log("uid : " + uid);
+
+                                        var all_schedule = schedules_db.get().then(queryDoc => {
+                                            var doc_length = queryDoc.length;
+                                            queryDoc.forEach(doc=>{
+                                                console.log(doc.id,'=>',doc.data().visit_date,doc.data().visitor_uid ,doc.data().confirm_status);
+                                                if(doc.data().visit_date == current_date && doc.data().visitor_uid == uid && doc.data().confirm_status == 2 && doc.data().is_visited == 0){
+                                                    is_correct_schedule = 1
+                                                    name = doc.data().visitor_name;
+                                                    schedules_db.doc(doc.id).update({
+                                                    r_visit_time: time,
+                                                    is_visited: 1,
+                                                    }).then(function (){
+                                                        console.log("visit_process is completed successfully");
+                                                        //res.send("success!!");
+                                                    }).catch(function(error) {
+                                                        // Handle Errors here.
+                                                        var errorCode = error.code;
+                                                        var errorMessage = error.message;
+                                                        console.log(errorMessage);
+                                                    });
+                                                }
+                                                
+                                            });
+                                            if(is_correct_schedule != 1){
+                                                res.send("No matching schedule!");
+                                            }else{
+                                                res.send(name);
+                                            }
+                                        }).catch(function(error) {
+                                            // Handle Errors here.
+                                            var errorCode = error.code;
+                                            var errorMessage = error.message;
+                                            console.log(errorMessage);
+                                            //res.send(errorMessage);
+                                        });                        
+                                    });  
+
+
                                 }
                             })
                             .pipe(fs.createWriteStream(localfilename));                        
                     }
                 
-                } else if(file.name.includes('faces_out')) {
+                } else if(file.name.includes('faces_comp')) {
                     var strarray = file.name.split('/')
                     if(strarray[1] != ''){
-                        var localfilename = './faces_out/'+strarray[1]
+                        var localfilename = './face_recognition/faces_comp/'+strarray[1]
                         
                         file.createReadStream()
                             .on('error', function(err) {
@@ -434,8 +573,66 @@ router.route('/storage_access').get(function (req, res) {
                                 console.log("download is completed in ",localfilename);
                                 if(num_file == 0){
                                     console.log("activate python file");
-                                    activate_python();
-                                    //console.log("result = ",result);
+                                    var {PythonShell} = require('python-shell');
+
+                                    var options = {
+                                        scriptPath: path.join(__dirname, 'face_recognition')
+                                    };
+                                    
+                                    PythonShell.run('./demo_video.py',options, function (err,results) {
+                                        if (err) throw err;
+                                        //console.log('finished with:',results);
+                                        console.log('python result : ',results[1]);
+                                        
+                                        var uid = results[1];
+
+                                        //날짜 확인 과정 추가하기
+                                        var date_info = moment().format("YYYY-MM-DD HH:mm:ss");
+                                        var current_date = date_info.substr(0,10);
+                                        var time = date_info.substr(11,5);
+                                        var schedules_db = admin.firestore().collection("Schedules");
+
+                                        console.log("current_date : " + current_date);
+                                        console.log("time : " + time);
+                                        console.log("uid : " + uid);
+
+                                        var all_schedule = schedules_db.get().then(queryDoc => {
+                                            var doc_length = queryDoc.length;
+                                            queryDoc.forEach(doc=>{
+                                                console.log(doc.id,'=>',doc.data().visit_date,doc.data().visitor_uid ,doc.data().confirm_status);
+                                                if(doc.data().visit_date == current_date && doc.data().visitor_uid == uid && doc.data().confirm_status == 2 && doc.data().is_visited == 0){
+                                                    is_correct_schedule = 1
+                                                    name = doc.data().visitor_name;
+                                                    schedules_db.doc(doc.id).update({
+                                                    r_visit_time: time,
+                                                    is_visited: 1,
+                                                    }).then(function (){
+                                                        console.log("visit_process is completed successfully");
+                                                        //res.send("success!!");
+                                                    }).catch(function(error) {
+                                                        // Handle Errors here.
+                                                        var errorCode = error.code;
+                                                        var errorMessage = error.message;
+                                                        console.log(errorMessage);
+                                                    });
+                                                }
+                                                
+                                            });
+                                            if(is_correct_schedule != 1){
+                                                res.send("No matching schedule!");
+                                            }else{
+                                                res.send(name);
+                                            }
+                                        }).catch(function(error) {
+                                            // Handle Errors here.
+                                            var errorCode = error.code;
+                                            var errorMessage = error.message;
+                                            console.log(errorMessage);
+                                            //res.send(errorMessage);
+                                        });                        
+                                    });  
+
+
                                 }
                             })
                             .pipe(fs.createWriteStream(localfilename));
@@ -443,14 +640,249 @@ router.route('/storage_access').get(function (req, res) {
                     
                 }
             });
-            //console.log("file work is done")
         }else{
             console.log(err)
         }
     });
-    */
+});
 
-    console.log("after storage_access")
+//방문자 exit face 인식
+router.route('/face_out').get(function (req, res) {
+
+    var is_correct_schedule = 0;
+    var name = '';
+    var bucket = admin.storage().bucket();
+
+    bucket.getFiles(function(err, files) {
+        if (!err) {
+            // files is an array of File objects.
+            var num_file = 0;
+            files.forEach(function(file,index){
+                var str_arr = file.name.split('/');
+                if(str_arr[1] != ''){
+                    num_file++;
+                }
+            });
+
+            files.forEach(function(file,index){
+                
+                if(file.name.includes('faces_in_server')){
+                    var strarray = file.name.split('/')
+                    
+                    if(strarray[1] != ''){
+                        var localfilename = './face_recognition/faces_in_server/'+strarray[1]
+                        
+                        file.createReadStream()
+                            .on('error', function(err) {
+                                console.log(err);
+                            }).on('response', function(response) {
+                                // Server connected and responded with the specified status and headers.
+                            }).on('end', function() {
+                                // The file is fully downloaded.
+                                num_file--;
+                                console.log("download is completed in ",localfilename);
+                                if(num_file == 0){
+                                    console.log("activate python file");
+                                    var {PythonShell} = require('python-shell');
+
+                                    var options = {
+                                        scriptPath: path.join(__dirname, 'face_recognition')
+                                    };
+                                    
+                                    PythonShell.run('./demo_video.py',options, function (err,results) {
+                                        if (err) throw err;
+                                        //console.log('finished with:',results);
+                                        console.log('python result : ',results[1]);
+                                        
+                                        var uid = results[1];
+
+                                        //날짜 확인 과정 추가하기
+                                        var date_info = moment().format("YYYY-MM-DD HH:mm:ss");
+                                        var current_date = date_info.substr(0,10);
+                                        var time = date_info.substr(11,5);
+                                        var schedules_db = admin.firestore().collection("Schedules");
+
+                                        console.log("current_date : " + current_date);
+                                        console.log("time : " + time);
+                                        console.log("uid : " + uid);
+
+                                        var all_schedule = schedules_db.get().then(queryDoc => {
+                                            var doc_length = queryDoc.length;
+                                            queryDoc.forEach(doc=>{
+                                                console.log(doc.id,'=>',doc.data().visit_date,doc.data().visitor_uid ,doc.data().confirm_status);
+                                                if(doc.data().visit_date == current_date && doc.data().visitor_uid == uid && doc.data().confirm_status == 2 && doc.data().is_visited == 1){
+                                                    is_correct_schedule = 1
+                                                    name = doc.data().visitor_name;
+                                                    
+                                                    var r_visit_time = doc.data().r_visit_time;
+                                            
+                                                    console.log("r_visit_date : " + r_visit_time );
+                                            
+                                                    var v_hour = r_visit_time.substr(0,2);
+                                                    var v_minute = r_visit_time.substr(3,2);
+                                                    
+                                                    var e_hour = time.substr(0,2);
+                                                    var e_minute = time.substr(3,2);
+                                            
+                                                    var cal_time = (parseInt(e_hour)*60 + parseInt(e_minute)) - (parseInt(v_hour)*60 + parseInt(v_minute));
+                                            
+                                                    var s_hour = parseInt(cal_time/60);
+                                                    var s_minute = cal_time - (s_hour*60);
+                                            
+                                                    if(s_hour == 0){
+                                                        var time_of_stay = String(s_minute)+"분"; 
+                                                    }else{
+                                                        var time_of_stay = String(s_hour)+"시간"+String(s_minute)+"분"; 
+                                                    }
+
+
+
+                                                    schedules_db.doc(doc.id).update({
+                                                        r_exit_time: time,
+                                                        is_visited: 2,
+                                                        time_of_stay: time_of_stay,
+                                                    }).then(function (){
+                                                        console.log("exit_process is completed successfully");
+                                                        //res.send("success!!");
+                                                    }).catch(function(error) {
+                                                        // Handle Errors here.
+                                                        var errorCode = error.code;
+                                                        var errorMessage = error.message;
+                                                        console.log(errorMessage);
+                                                    });
+                                                }
+                                                
+                                            });
+                                            if(is_correct_schedule != 1){
+                                                res.send("No matching schedule!");
+                                            }else{
+                                                res.send(name);
+                                            }
+                                        }).catch(function(error) {
+                                            // Handle Errors here.
+                                            var errorCode = error.code;
+                                            var errorMessage = error.message;
+                                            console.log(errorMessage);
+                                            //res.send(errorMessage);
+                                        });                        
+                                    });  
+
+
+                                }
+                            })
+                            .pipe(fs.createWriteStream(localfilename));                        
+                    }
+                
+                } else if(file.name.includes('faces_comp')) {
+                    var strarray = file.name.split('/')
+                    if(strarray[1] != ''){
+                        var localfilename = './face_recognition/faces_comp/'+strarray[1]
+                        
+                        file.createReadStream()
+                            .on('error', function(err) {
+                                console.log(err)
+                            }).on('response', function(response) {
+                                // Server connected and responded with the specified status and headers.
+                            }).on('end', function() {
+                                // The file is fully downloaded.
+                                num_file--;
+                                console.log("download is completed in ",localfilename);
+                                if(num_file == 0){
+                                    console.log("activate python file");
+                                    var {PythonShell} = require('python-shell');
+
+                                    var options = {
+                                        scriptPath: path.join(__dirname, 'face_recognition')
+                                    };
+                                    
+                                    PythonShell.run('./demo_video.py',options, function (err,results) {
+                                        if (err) throw err;
+                                        //console.log('finished with:',results);
+                                        console.log('python result : ',results[1]);
+                                        
+                                        var uid = results[1];
+
+                                        //날짜 확인 과정 추가하기
+                                        var date_info = moment().format("YYYY-MM-DD HH:mm:ss");
+                                        var current_date = date_info.substr(0,10);
+                                        var time = date_info.substr(11,5);
+                                        var schedules_db = admin.firestore().collection("Schedules");
+
+                                        console.log("current_date : " + current_date);
+                                        console.log("time : " + time);
+                                        console.log("uid : " + uid);
+
+                                        var all_schedule = schedules_db.get().then(queryDoc => {
+                                            var doc_length = queryDoc.length;
+                                            queryDoc.forEach(doc=>{
+                                                console.log(doc.id,'=>',doc.data().visit_date,doc.data().visitor_uid ,doc.data().confirm_status);
+                                                if(doc.data().visit_date == current_date && doc.data().visitor_uid == uid && doc.data().confirm_status == 2 && doc.data().is_visited == 1){
+                                                    is_correct_schedule = 1
+                                                    name = doc.data().visitor_name;
+
+                                                    var r_visit_time = doc.data().r_visit_time;
+                                            
+                                                    console.log("r_visit_date : " + r_visit_time );
+                                            
+                                                    var v_hour = r_visit_time.substr(0,2);
+                                                    var v_minute = r_visit_time.substr(3,2);
+                                                    
+                                                    var e_hour = time.substr(0,2);
+                                                    var e_minute = time.substr(3,2);
+                                            
+                                                    var cal_time = (parseInt(e_hour)*60 + parseInt(e_minute)) - (parseInt(v_hour)*60 + parseInt(v_minute));
+                                            
+                                                    var s_hour = parseInt(cal_time/60);
+                                                    var s_minute = cal_time - (s_hour*60);
+                                            
+                                                    if(s_hour == 0){
+                                                        var time_of_stay = String(s_minute)+"분"; 
+                                                    }else{
+                                                        var time_of_stay = String(s_hour)+"시간"+String(s_minute)+"분"; 
+                                                    }
+
+                                                    schedules_db.doc(doc.id).update({
+                                                        r_exit_time: time,
+                                                        is_visited: 2,
+                                                        time_of_stay: time_of_stay,
+                                                    }).then(function (){
+                                                        console.log("exit_process is completed successfully");
+                                                        //res.send("success!!");
+                                                    }).catch(function(error) {
+                                                        // Handle Errors here.
+                                                        var errorCode = error.code;
+                                                        var errorMessage = error.message;
+                                                        console.log(errorMessage);
+                                                    });
+                                                }
+                                                
+                                            });
+                                            if(is_correct_schedule != 1){
+                                                res.send("No matching schedule!");
+                                            }else{
+                                                res.send(name);
+                                            }
+                                        }).catch(function(error) {
+                                            // Handle Errors here.
+                                            var errorCode = error.code;
+                                            var errorMessage = error.message;
+                                            console.log(errorMessage);
+                                            //res.send(errorMessage);
+                                        });                        
+                                    });  
+
+
+                                }
+                            })
+                            .pipe(fs.createWriteStream(localfilename));
+                    }
+                    
+                }
+            });
+        }else{
+            console.log(err)
+        }
+    });
 });
 
 app.use('/', router);

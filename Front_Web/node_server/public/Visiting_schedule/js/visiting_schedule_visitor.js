@@ -8,6 +8,11 @@ $(document).on("click", ".logout", function () {
   location.href = "/log_out_process";
 });
 
+//사진등록 클릭 시
+$(document).on("click", ".register_pic", function () {
+  location.href = "/register_visitor_face";
+});
+
 //신규 방문 등록 클릭 시
 $(document).on("click", ".btn_register", function () {
   location.href = "/register_schedule";

@@ -37,6 +37,7 @@ var head_common = `
     <!-- Add Firebase products that you want to use -->
     <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-storage.js"></script>
     <script>
         var init = firebase.initializeApp({
             apiKey: "AIzaSyCuRYdN1dqAU2_zA0msxpvqp_TPF9PWWo8",
@@ -49,6 +50,7 @@ var head_common = `
             measurementId: "G-HK524L8K92"
         });
         var db = init.firestore();
+        var storage = init.storage();
     </script>
 `;
 

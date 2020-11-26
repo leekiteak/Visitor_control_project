@@ -10,7 +10,7 @@ import sys
 
 folder_path = "D:\\Visitor_control_project\\Front_Web\\node_server\\face_recognition\\faces_comp"
 #dist_path = "/home/preeth/Downloads"
-
+print("start python")
 #c = 0
 images = [os.path.join(folder_path, f) for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))]
 
@@ -30,6 +30,8 @@ recognizer.create_known_faces('./face_recognition/faces_in_server')
 
 
 #video_size = (1024, 720)
+
+#조절 가능성 있음!!!
 video_size = (512, 450)
 #fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
 
@@ -38,9 +40,9 @@ video_size = (512, 450)
 for i in range(len(images)):
     # Grab a single frame of video
     #ret, frame = input_movie.read()
-    #print(images[i])
+    #print("in for")
     path_arr = images[i].split('\\')
-    print(path_arr)
+    #print(path_arr)
     path = './face_recognition/faces_comp/'+path_arr[6]
     #print(path)
     frame = cv2.imread(path)
@@ -51,16 +53,17 @@ for i in range(len(images)):
     item = recognizer.recognize(frame, 0.5)
     if item:
         name, (left, top, right, bottom), _, score = item
-        cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
+        print(name)
+        #cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
         # Draw a label with a name below the face
-        cv2.rectangle(frame, (left, bottom - 25), (right, bottom), (0, 0, 255), cv2.FILLED)
-        font = cv2.FONT_HERSHEY_DUPLEX
-        cv2.putText(frame, "%s %.3f" % (name, score), (left + 6, bottom - 6), font, 0.5, (255, 255, 255), 1)
+        #cv2.rectangle(frame, (left, bottom - 25), (right, bottom), (0, 0, 255), cv2.FILLED)
+        #font = cv2.FONT_HERSHEY_DUPLEX
+        #cv2.putText(frame, "%s %.3f" % (name, score), (left + 6, bottom - 6), font, 0.5, (255, 255, 255), 1)
     #output_movie.write(frame)
-    cv2.imshow('0', frame)
-    cv2.waitKey(0)
+    #cv2.imshow('0', frame)
+    #cv2.waitKey(0)
 
 # All done!
 #output_movie.release()
 #input_movie.release()
-cv2.destroyAllWindows()
+#cv2.destroyAllWindows()

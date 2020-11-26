@@ -17,8 +17,10 @@ var register_visitor_face = `
       <div class="left"></div>
       <div class="center">
         <div class="img">
-          <button class="btn_addPic" align="center">눌러서 사진 추가</button>
+          <img id="image_section" src="" alt="your image" height=440 width=470/>
         </div>
+        <input type="file" id = "imginput" text-align="center" />
+        <!--<button class="btn_addPic" align="center">사진 선택</button>-->
       </div>
       <div class="right"></div>
     </div>
@@ -29,8 +31,11 @@ var register_visitor_face = `
   </div>
 `;
 
-function print_register_visitor_face() {
+function print_register_visitor_face(uid) {
     return `
+    <script>
+        var uid = "${uid}";
+      </script>
       ${register_visitor_face}
     `;
 } 
