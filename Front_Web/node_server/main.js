@@ -455,10 +455,11 @@ function update_visit_info(uid){
 }
 
 //방문자 visit face 인식
-router.route('/face_in').get(function (req, res) {
+router.route('/face_in').post(function (req, res) {
 
     //activate_python();
     var is_correct_schedule = 0;
+    var status = 0;
     var name = '';
     var bucket = admin.storage().bucket();
 
@@ -518,8 +519,42 @@ router.route('/face_in').get(function (req, res) {
                                         var all_schedule = schedules_db.get().then(queryDoc => {
                                             var doc_length = queryDoc.length;
                                             queryDoc.forEach(doc=>{
-                                                console.log(doc.id,'=>',doc.data().visit_date,doc.data().visitor_uid ,doc.data().confirm_status);
+                                                console.log(doc.id,'=>',doc.data().visit_date,doc.data().visitor_uid ,doc.data().confirm_status,doc.data().is_visited);
+                                                if( doc.data().visitor_uid == uid ){
+                                                    is_correct_schedule = 1
+                                                    if(doc.data().visit_date == current_date){
+                                                        if(doc.data().is_visited == 0){
+                                                            if(doc.data().confirm_status == 2){
+                                                                status = 4;
+                                                                console.log("in process ", doc.data().uid," ",doc.data().visitor_name);
+                                                                name = doc.data().visitor_name;
+                                                                schedules_db.doc(doc.id).update({
+                                                                r_visit_time: time,
+                                                                is_visited: 1,
+                                                                }).then(function (){
+                                                                    console.log("visit_process is completed successfully");
+                                                                    //res.send("success!!");
+                                                                }).catch(function(error) {
+                                                                    // Handle Errors here.
+                                                                    var errorCode = error.code;
+                                                                    var errorMessage = error.message;
+                                                                    console.log(errorMessage);
+                                                                });                                                                
+                                                            }else{
+                                                                status = 3;
+                                                            }
+
+                                                        }else{
+                                                            status = 2;
+                                                        }
+                                                    }else{
+                                                        status = 1;
+                                                    }
+
+                                                }
+                                                /*
                                                 if(doc.data().visit_date == current_date && doc.data().visitor_uid == uid && doc.data().confirm_status == 2 && doc.data().is_visited == 0){
+                                                    console.log("in process ", doc.data().uid," ",doc.data().visitor_name);
                                                     is_correct_schedule = 1
                                                     name = doc.data().visitor_name;
                                                     schedules_db.doc(doc.id).update({
@@ -535,12 +570,30 @@ router.route('/face_in').get(function (req, res) {
                                                         console.log(errorMessage);
                                                     });
                                                 }
+                                                */
                                                 
                                             });
-                                            if(is_correct_schedule != 1){
-                                                res.send("No matching schedule!");
+                                            if(is_correct_schedule == 0){
+                                                //no matching uid 일치하는 uid의 스케줄이 존재하지 않음
+                                                res.send("0.error");
                                             }else{
-                                                res.send(name);
+                                                if(status == 1){
+                                                    //날짜 틀림
+                                                    res.send("1.error");
+                                                }else if(status == 2){
+                                                    //이미 방문해서 건물 내  존재 상태이거나 방문하고 나서 건물 밖으로 나온 상태
+                                                    res.send("2.error");
+                                                }else if(status == 3){
+                                                    //방문 신청이 직원에 의해 승인 되지 않은 상태
+                                                    res.send("3.error");
+                                                }else if(status == 4){
+                                                    //방문 정상 처리 완료
+                                                    res.send("4."+name);
+                                                }else{
+                                                    //status == 0
+                                                    res.send("else");
+                                                }
+                                                
                                             }
                                         }).catch(function(error) {
                                             // Handle Errors here.
@@ -599,29 +652,62 @@ router.route('/face_in').get(function (req, res) {
                                         var all_schedule = schedules_db.get().then(queryDoc => {
                                             var doc_length = queryDoc.length;
                                             queryDoc.forEach(doc=>{
-                                                console.log(doc.id,'=>',doc.data().visit_date,doc.data().visitor_uid ,doc.data().confirm_status);
-                                                if(doc.data().visit_date == current_date && doc.data().visitor_uid == uid && doc.data().confirm_status == 2 && doc.data().is_visited == 0){
+                                                console.log(doc.id,'=>',doc.data().visit_date,doc.data().visitor_uid ,doc.data().confirm_status,doc.data().is_visited);
+                                                if( doc.data().visitor_uid == uid ){
                                                     is_correct_schedule = 1
-                                                    name = doc.data().visitor_name;
-                                                    schedules_db.doc(doc.id).update({
-                                                    r_visit_time: time,
-                                                    is_visited: 1,
-                                                    }).then(function (){
-                                                        console.log("visit_process is completed successfully");
-                                                        //res.send("success!!");
-                                                    }).catch(function(error) {
-                                                        // Handle Errors here.
-                                                        var errorCode = error.code;
-                                                        var errorMessage = error.message;
-                                                        console.log(errorMessage);
-                                                    });
+                                                    if(doc.data().visit_date == current_date){
+                                                        if(doc.data().is_visited == 0){
+                                                            if(doc.data().confirm_status == 2){
+                                                                status = 4;
+                                                                console.log("in process ", doc.data().uid," ",doc.data().visitor_name);
+                                                                name = doc.data().visitor_name;
+                                                                schedules_db.doc(doc.id).update({
+                                                                r_visit_time: time,
+                                                                is_visited: 1,
+                                                                }).then(function (){
+                                                                    console.log("visit_process is completed successfully");
+                                                                    //res.send("success!!");
+                                                                }).catch(function(error) {
+                                                                    // Handle Errors here.
+                                                                    var errorCode = error.code;
+                                                                    var errorMessage = error.message;
+                                                                    console.log(errorMessage);
+                                                                });                                                                
+                                                            }else{
+                                                                status = 3;
+                                                            }
+
+                                                        }else{
+                                                            status = 2;
+                                                        }
+                                                    }else{
+                                                        status = 1;
+                                                    }
+
                                                 }
                                                 
                                             });
-                                            if(is_correct_schedule != 1){
-                                                res.send("No matching schedule!");
+                                            if(is_correct_schedule == 0){
+                                                //no matching uid 일치하는 uid의 스케줄이 존재하지 않음
+                                                res.send("0.error");
                                             }else{
-                                                res.send(name);
+                                                if(status == 1){
+                                                    //날짜 틀림
+                                                    res.send("1.error");
+                                                }else if(status == 2){
+                                                    //이미 방문해서 건물 내  존재 상태이거나 방문하고 나서 건물 밖으로 나온 상태
+                                                    res.send("2.error");
+                                                }else if(status == 3){
+                                                    //방문 신청이 직원에 의해 승인 되지 않은 상태
+                                                    res.send("3.error");
+                                                }else if(status == 4){
+                                                    //방문 정상 처리 완료
+                                                    res.send("4."+name);
+                                                }else{
+                                                    //status == 0
+                                                    res.send("else");
+                                                }
+                                                
                                             }
                                         }).catch(function(error) {
                                             // Handle Errors here.
@@ -647,9 +733,10 @@ router.route('/face_in').get(function (req, res) {
 });
 
 //방문자 exit face 인식
-router.route('/face_out').get(function (req, res) {
+router.route('/face_out').post(function (req, res) {
 
     var is_correct_schedule = 0;
+    var status = 0;
     var name = '';
     var bucket = admin.storage().bucket();
 
@@ -709,7 +796,68 @@ router.route('/face_out').get(function (req, res) {
                                         var all_schedule = schedules_db.get().then(queryDoc => {
                                             var doc_length = queryDoc.length;
                                             queryDoc.forEach(doc=>{
-                                                console.log(doc.id,'=>',doc.data().visit_date,doc.data().visitor_uid ,doc.data().confirm_status);
+                                                console.log(doc.id,'=>',doc.data().visit_date,doc.data().visitor_uid ,doc.data().confirm_status,doc.data().is_visited);
+                                                if( doc.data().visitor_uid == uid ){
+                                                    is_correct_schedule = 1
+                                                    if(doc.data().visit_date == current_date){
+                                                        if(doc.data().is_visited == 1){
+                                                            if(doc.data().confirm_status == 2){
+                                                                status = 4;
+                                                                console.log("in process ", doc.data().uid," ",doc.data().visitor_name);
+                                                                name = doc.data().visitor_name;
+                                                                
+                                                                
+                                                                var r_visit_time = doc.data().r_visit_time;
+                                            
+                                                                console.log("r_visit_date : " + r_visit_time );
+                                                        
+                                                                var v_hour = r_visit_time.substr(0,2);
+                                                                var v_minute = r_visit_time.substr(3,2);
+                                                                
+                                                                var e_hour = time.substr(0,2);
+                                                                var e_minute = time.substr(3,2);
+                                                        
+                                                                var cal_time = (parseInt(e_hour)*60 + parseInt(e_minute)) - (parseInt(v_hour)*60 + parseInt(v_minute));
+                                                        
+                                                                var s_hour = parseInt(cal_time/60);
+                                                                var s_minute = cal_time - (s_hour*60);
+                                                        
+                                                                if(s_hour == 0){
+                                                                    var time_of_stay = String(s_minute)+"분"; 
+                                                                }else{
+                                                                    var time_of_stay = String(s_hour)+"시간"+String(s_minute)+"분"; 
+                                                                }
+            
+            
+            
+                                                                schedules_db.doc(doc.id).update({
+                                                                    r_exit_time: time,
+                                                                    is_visited: 2,
+                                                                    time_of_stay: time_of_stay,
+                                                                }).then(function (){
+                                                                    console.log("exit_process is completed successfully");
+                                                                    //res.send("success!!");
+                                                                }).catch(function(error) {
+                                                                    // Handle Errors here.
+                                                                    var errorCode = error.code;
+                                                                    var errorMessage = error.message;
+                                                                    console.log(errorMessage);
+                                                                });
+
+
+                                                            }else{
+                                                                status = 3;
+                                                            }
+
+                                                        }else{
+                                                            status = 2;
+                                                        }
+                                                    }else{
+                                                        status = 1;
+                                                    }
+
+                                                }
+                                                /*
                                                 if(doc.data().visit_date == current_date && doc.data().visitor_uid == uid && doc.data().confirm_status == 2 && doc.data().is_visited == 1){
                                                     is_correct_schedule = 1
                                                     name = doc.data().visitor_name;
@@ -751,12 +899,29 @@ router.route('/face_out').get(function (req, res) {
                                                         console.log(errorMessage);
                                                     });
                                                 }
-                                                
+                                                */
                                             });
-                                            if(is_correct_schedule != 1){
-                                                res.send("No matching schedule!");
+                                            if(is_correct_schedule == 0){
+                                                //no matching uid 일치하는 uid의 스케줄이 존재하지 않음
+                                                res.send("0.error");
                                             }else{
-                                                res.send(name);
+                                                if(status == 1){
+                                                    //날짜 틀림
+                                                    res.send("1.error");
+                                                }else if(status == 2){
+                                                    //건물 내  방문하지 않아 상태이거나 방문하고 나서 건물 밖으로 나온 상태
+                                                    res.send("2.error");
+                                                }else if(status == 3){
+                                                    //방문 신청이 직원에 의해 승인 되지 않은 상태
+                                                    res.send("3.error");
+                                                }else if(status == 4){
+                                                    //방문 정상 처리 완료
+                                                    res.send("4."+name);
+                                                }else{
+                                                    //status == 0
+                                                    res.send("else");
+                                                }
+                                                
                                             }
                                         }).catch(function(error) {
                                             // Handle Errors here.
@@ -815,52 +980,90 @@ router.route('/face_out').get(function (req, res) {
                                         var all_schedule = schedules_db.get().then(queryDoc => {
                                             var doc_length = queryDoc.length;
                                             queryDoc.forEach(doc=>{
-                                                console.log(doc.id,'=>',doc.data().visit_date,doc.data().visitor_uid ,doc.data().confirm_status);
-                                                if(doc.data().visit_date == current_date && doc.data().visitor_uid == uid && doc.data().confirm_status == 2 && doc.data().is_visited == 1){
+                                                console.log(doc.id,'=>',doc.data().visit_date,doc.data().visitor_uid ,doc.data().confirm_status,doc.data().is_visited);
+                                                if( doc.data().visitor_uid == uid ){
                                                     is_correct_schedule = 1
-                                                    name = doc.data().visitor_name;
+                                                    if(doc.data().visit_date == current_date){
+                                                        if(doc.data().is_visited == 1){
+                                                            if(doc.data().confirm_status == 2){
+                                                                status = 4;
+                                                                console.log("in process ", doc.data().uid," ",doc.data().visitor_name);
+                                                                name = doc.data().visitor_name;
+                                                                
+                                                                
+                                                                var r_visit_time = doc.data().r_visit_time;
+                                            
+                                                                console.log("r_visit_date : " + r_visit_time );
+                                                        
+                                                                var v_hour = r_visit_time.substr(0,2);
+                                                                var v_minute = r_visit_time.substr(3,2);
+                                                                
+                                                                var e_hour = time.substr(0,2);
+                                                                var e_minute = time.substr(3,2);
+                                                        
+                                                                var cal_time = (parseInt(e_hour)*60 + parseInt(e_minute)) - (parseInt(v_hour)*60 + parseInt(v_minute));
+                                                        
+                                                                var s_hour = parseInt(cal_time/60);
+                                                                var s_minute = cal_time - (s_hour*60);
+                                                        
+                                                                if(s_hour == 0){
+                                                                    var time_of_stay = String(s_minute)+"분"; 
+                                                                }else{
+                                                                    var time_of_stay = String(s_hour)+"시간"+String(s_minute)+"분"; 
+                                                                }
+            
+            
+            
+                                                                schedules_db.doc(doc.id).update({
+                                                                    r_exit_time: time,
+                                                                    is_visited: 2,
+                                                                    time_of_stay: time_of_stay,
+                                                                }).then(function (){
+                                                                    console.log("exit_process is completed successfully");
+                                                                    //res.send("success!!");
+                                                                }).catch(function(error) {
+                                                                    // Handle Errors here.
+                                                                    var errorCode = error.code;
+                                                                    var errorMessage = error.message;
+                                                                    console.log(errorMessage);
+                                                                });
 
-                                                    var r_visit_time = doc.data().r_visit_time;
-                                            
-                                                    console.log("r_visit_date : " + r_visit_time );
-                                            
-                                                    var v_hour = r_visit_time.substr(0,2);
-                                                    var v_minute = r_visit_time.substr(3,2);
-                                                    
-                                                    var e_hour = time.substr(0,2);
-                                                    var e_minute = time.substr(3,2);
-                                            
-                                                    var cal_time = (parseInt(e_hour)*60 + parseInt(e_minute)) - (parseInt(v_hour)*60 + parseInt(v_minute));
-                                            
-                                                    var s_hour = parseInt(cal_time/60);
-                                                    var s_minute = cal_time - (s_hour*60);
-                                            
-                                                    if(s_hour == 0){
-                                                        var time_of_stay = String(s_minute)+"분"; 
+
+                                                            }else{
+                                                                status = 3;
+                                                            }
+
+                                                        }else{
+                                                            status = 2;
+                                                        }
                                                     }else{
-                                                        var time_of_stay = String(s_hour)+"시간"+String(s_minute)+"분"; 
+                                                        status = 1;
                                                     }
 
-                                                    schedules_db.doc(doc.id).update({
-                                                        r_exit_time: time,
-                                                        is_visited: 2,
-                                                        time_of_stay: time_of_stay,
-                                                    }).then(function (){
-                                                        console.log("exit_process is completed successfully");
-                                                        //res.send("success!!");
-                                                    }).catch(function(error) {
-                                                        // Handle Errors here.
-                                                        var errorCode = error.code;
-                                                        var errorMessage = error.message;
-                                                        console.log(errorMessage);
-                                                    });
-                                                }
+                                                }                                                
                                                 
                                             });
-                                            if(is_correct_schedule != 1){
-                                                res.send("No matching schedule!");
+                                            if(is_correct_schedule == 0){
+                                                //no matching uid 일치하는 uid의 스케줄이 존재하지 않음
+                                                res.send("0.error");
                                             }else{
-                                                res.send(name);
+                                                if(status == 1){
+                                                    //날짜 틀림
+                                                    res.send("1.error");
+                                                }else if(status == 2){
+                                                    //건물 내  방문하지 않아 상태이거나 방문하고 나서 건물 밖으로 나온 상태
+                                                    res.send("2.error");
+                                                }else if(status == 3){
+                                                    //방문 신청이 직원에 의해 승인 되지 않은 상태
+                                                    res.send("3.error");
+                                                }else if(status == 4){
+                                                    //방문 정상 처리 완료
+                                                    res.send("4."+name);
+                                                }else{
+                                                    //status == 0
+                                                    res.send("else");
+                                                }
+                                                
                                             }
                                         }).catch(function(error) {
                                             // Handle Errors here.

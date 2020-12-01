@@ -32,7 +32,7 @@ recognizer.create_known_faces('./face_recognition/faces_in_server')
 #video_size = (1024, 720)
 
 #조절 가능성 있음!!!
-video_size = (512, 450)
+#video_size = (512, 450)
 #fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
 
 #output_movie = cv2.VideoWriter(args.output_video_path, fourcc, 10, video_size)
@@ -49,7 +49,7 @@ for i in range(len(images)):
     # Quit when the input video file ends
     #if not ret: break
 
-    frame = cv2.resize(frame, dsize=video_size)
+    #frame = cv2.resize(frame,size=video_size)
     item = recognizer.recognize(frame, 0.5)
     if item:
         name, (left, top, right, bottom), _, score = item

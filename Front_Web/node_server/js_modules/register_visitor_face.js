@@ -7,7 +7,7 @@ var register_visitor_face = `
         <div class="logo">방문자 등록 서비스</div>
       </div>
       <div class="center">
-        <div class="title">얼굴 등록</div>
+        <div class="title">마스크 착용 얼굴 등록</div>
       </div>
       <div class="right">
       </div>
